@@ -1,0 +1,40 @@
+<h2>Assignee Page</h2>
+
+<button>My Tasks</button>
+
+<div class="tasks-not-available">
+  <p *ngIf="tasks.length < 1 && !isLoading"> No tasks available</p>
+  <P *ngIf="isLoading">Loading...</P>
+</div>
+
+<p-table [value]="tasks" [loading]="isLoading" [scrollable]="true" *ngIf="tasks.length>1">
+  <ng-template pTemplate="header">
+    
+    <tr>
+      <th pSortableColumn="Name">TASK <p-sortIcon field="Name" /></th>
+      <th>DESCRIPTION</th>
+      <th>COMPLETE TASK</th>
+      <th pSortableColumn="Status">STAGE <p-sortIcon field="Name" /></th>
+      <th pSortableColumn="DueDate">DUE DATE <p-sortIcon field="Name" /></th>  
+      <th pSortableColumn="Level">Level <p-sortIcon field="Name" /></th>    
+      <th><span class="pi pi-wave-pulse"></span></th>   
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-task>
+    <tr [ngClass]="{'overdue': getStatusName(task.Status) === 'Overdue'}">
+      <td>{{task.Name}}</td>
+      <td>{{task.Description}}</td>
+      <td>
+        <input type="checkbox" [checked]="task.Status === 2" 
+               [disabled]="task.Status === 2" 
+               (change)="changeStatus(task)">
+      </td>
+      <td>{{ taskStatusToString(task.Status) }}</td>
+      <td>{{task.DueDate | date: 'yyyy-MM-dd'}}</td>  
+      <td>{{taskLevelToString(task.Level)}}</td>     
+      <td>
+        <button (click)="openTaskDetails(task)">View Details</button>
+      </td>         
+    </tr>
+  </ng-template>
+</p-table>

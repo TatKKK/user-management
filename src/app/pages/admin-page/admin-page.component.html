@@ -1,0 +1,54 @@
+<button class="button" (click)="openAddUserDialog()">
+  <a><span class="pi pi-user-plus"></span> Add User</a>
+</button>
+<p-toast></p-toast>
+<form [formGroup]="editUser">
+  <table>
+    <thead>
+      <tr>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Phone</th>
+        <th>Email</th>
+        <th>Username</th>
+        <th>User Role</th>
+        <th>User Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of users; let i = index" [ngClass]="{'grey-row': user.IsActive === false}" (click)="user.UserId ? selectUser(user.UserId, $event) : null">
+        <ng-container *ngIf="selectedUser === user && isEditMode; else viewTemplate">
+          <td><input formControlName="Fname" (click)="$event.stopPropagation()" /></td>
+          <td><input formControlName="Lname" (click)="$event.stopPropagation()" /></td>
+          <td><input formControlName="Phone" (click)="$event.stopPropagation()" /></td>
+          <td><input formControlName="Email" (click)="$event.stopPropagation()" /></td>
+          <td><input formControlName="Username" (click)="$event.stopPropagation()" /></td>
+          <td><input formControlName="RoleId" (click)="$event.stopPropagation()" /></td>
+          <td><input type="checkbox" formControlName="IsActive" (click)="$event.stopPropagation()" /></td>
+          <td>
+            <button type="button" class="edit-btn" (click)="saveUserChanges($event)">Save</button>
+            <button type="button" class="delete-btn" (click)="toggleEditMode()">Cancel</button>
+          </td>
+        </ng-container>
+        <ng-template #viewTemplate>
+          <td>{{ user.Fname }}</td>
+          <td>{{ user.Lname }}</td>
+          <td>{{ user.Phone }}</td>   
+          <td>{{ user.Email }}</td>                 
+          <td>{{ user.Username }}</td>
+          <td>{{ user.Role?.Name }}</td>
+          <td>{{ user.IsActive ? 'Active' : 'Inactive' }}</td>
+          <td>
+            <button type="button" class="edit-btn" (click)="toggleEditMode(user, $event)">Edit</button>
+            <button type="button" class="delete-btn" (click)="deleteUser(user)">Delete</button>
+          </td>
+        </ng-template>
+      </tr>
+    </tbody>
+  </table>
+</form>
+
+<!-- <button class="button">
+  <a><span class="pi pi-user-plus"></span> All Tasks</a>
+</button> -->

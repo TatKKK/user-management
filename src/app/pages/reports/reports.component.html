@@ -1,0 +1,100 @@
+<!-- <p-table
+  #dt2
+  [value]="users"
+  dataKey="UserId"
+  [rows]="10"
+  [rowsPerPageOptions]="[10, 25, 50]"
+  [loading]="loading"
+  [paginator]="true"
+  [globalFilterFields]="['Fname', 'Lname', 'Username', 'Role.Name']"
+  [tableStyle]="{ 'min-width': '75rem' }"
+>
+  <ng-template pTemplate="caption">
+    <div class="flex">
+      <p-iconField iconPosition="left" class="ml-auto">
+        <p-inputIcon>
+          <i class="pi pi-search"></i>
+        </p-inputIcon>
+        <input
+          pInputText
+          type="text"
+          (input)="onGlobalFilter($event)"
+          placeholder="Search keyword"
+        />
+      </p-iconField>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="header">
+    <tr>
+      <th style="width:22%">Fname</th>
+      <th style="width:22%">Lname</th>
+      <th style="width:22%">Username</th>
+      <th style="width:22%">Role</th>
+      <th style="width:12%">Status</th>
+    </tr>
+    <tr>
+      <th>
+        <p-columnFilter type="text" field="Fname" placeholder="Search by first name" ariaLabel="Filter First Name"></p-columnFilter>
+      </th>
+      <th>
+        <p-columnFilter type="text" field="Lname" placeholder="Search by last name" ariaLabel="Filter Last Name"></p-columnFilter>
+      </th>
+      <th>
+        <p-columnFilter type="text" field="Username" placeholder="Search by username" ariaLabel="Filter Username"></p-columnFilter>
+      </th>
+      <th>
+        <p-columnFilter type="text" field="Role.Name" placeholder="Search by role" ariaLabel="Filter Role"></p-columnFilter>
+      </th>
+      <th>
+        <p-columnFilter type="boolean" field="IsActive"></p-columnFilter>
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-user>
+    <tr>
+      <td>{{ user.Fname }}</td>
+      <td>{{ user.Lname }}</td>
+      <td>{{ user.Username }}</td>
+      <td>{{ user.Role?.Name }}</td>
+      <td>
+        <i class="pi" [ngClass]="{ 'text-green-500 pi-check-circle': user.IsActive, 'text-red-500 pi-times-circle': !user.IsActive }"></i>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="5">No users found.</td>
+    </tr>
+  </ng-template>
+</p-table> -->
+
+
+<p-table [value]="reports" 
+
+[scrollable]="true"
+[loading]="isLoading"
+>
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="Fname">Fname <p-sortIcon field="Fname" /></th>
+        <th pSortableColumn="Lname">Lname <p-sortIcon field="Lname" /></th> 
+        <th pSortableColumn="Username">Username <p-sortIcon field="Username" /></th> 
+          <th>Completed</th>
+          <th>New</th>
+          <th>In Progress</th>
+          <th>Overdue</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-report>
+      <tr>
+        <td>{{report.Fname}} </td>
+        <td>{{report.Lname}}</td>
+        <td>{{report.Username}}</td>
+        <td>{{report.CompletedTasks}}</td>
+        <td>{{ report.NewTasks}}</td>
+        <td>{{report.InProgressTasks}}</td>
+        <td>{{report.OverdueTasks}}</td>
+      </tr>
+    </ng-template>
+   
+  </p-table>

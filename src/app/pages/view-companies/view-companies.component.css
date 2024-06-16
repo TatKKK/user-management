@@ -1,0 +1,80 @@
+.card-container {
+  padding-top:50px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: start;
+  gap:50px;
+}
+
+.card {
+  width: 30%;
+  margin-bottom:30px;
+  border-radius: 10px;
+  display:flex;
+  flex-direction: column;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  text-align: center;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  transition: all .6s cubic-bezier(.165,.84,.44,1); 
+}
+
+.card:hover {
+  transform: translateY(-10px);
+}
+
+.card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.card-info {
+  padding: 20px;
+}
+
+.card-info h3,
+.card-info h2 {
+  margin: 10px 0;
+  color: #333;
+  font-size: 0.875rem;
+}
+
+.card-info span {
+  font-weight: bold;
+  color: #555;
+  font-size: 0.875rem;
+}
+
+.card-btn a {
+  font-size: 0.875rem;
+  text-decoration: none;
+  color:var(--grey-600);    
+  transition: background-color 0.2s;
+  display:flex;
+  align-items:center;
+}
+
+.card-btn{  
+  --pill-accent: var(--bright-blue);
+  background: color-mix(in srgb, var(--pill-accent) 5%, transparent);
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--pill-accent);
+  padding-inline: 0.75rem;
+  padding-block: 0.375rem;
+  border: 0;
+  transition: background 0.3s ease;    
+  line-height: 1.4rem;
+  letter-spacing: -0.00875rem;
+  text-decoration: none;
+}
+.card-btn svg{
+  margin-inline-start: 0.25rem;
+}
+
+
+.pill:hover {
+  background: color-mix(in srgb, var(--pill-accent) 15%, transparent);
+}

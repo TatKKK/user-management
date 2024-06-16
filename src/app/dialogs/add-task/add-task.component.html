@@ -1,0 +1,49 @@
+<div class="addTask-container">
+  <form [formGroup]="this.addTaskForm" (ngSubmit)="addTask()" class="add-task">
+    <div class="input-group">
+        <input type="text" formControlName="Name" placeholder="Task Name.." >
+    </div>
+    <div class="input-group">
+        <input type="text" formControlName="Description" placeholder="Task Description">
+    </div>
+    <div class="input-group">
+      <input type="text" onfocus="type='date'" formControlName="DueDate"
+      placeholder="Choose duedate"
+      
+      [ngClass]="{
+        error:
+          addTaskForm.controls['DueDate'].errors?.['invalidDate'] &&
+          addTaskForm.controls['DueDate'].dirty &&
+          addTaskForm.controls['DueDate'].touched
+      }">
+    </div>
+    
+    <span *ngIf="addTaskForm.controls['DueDate'].errors?.['invalidDate']" class="alert">
+      Due date must be today or in the future.
+    </span>
+    <!-- <div class="input-group">
+        <select formControlName="TaskLevel">
+        <option value=""> Choose task level</option>
+        <option value="EAsy"> Easy</option>
+        <option value="Medium">Medium</option>
+        <option value="Advanced">Advanced</option>
+     </select>
+    </div> -->
+    <div class="input-group">
+        <select formControlName="UserId">
+          <option value="">Choose employee</option>
+          <option *ngFor="let user of users" [value]="user.UserId">{{user.Username}} </option>
+        </select>
+      </div>
+      
+
+      <div class="pre">
+        <p>Form Status:{{ addTaskForm.status }}</p>
+        <pre>{{ this.addTaskForm.value | json }} </pre>
+      </div>
+      <button type="submit" class="submit-btn" [disabled]="!addTaskForm.valid">
+        Submit
+      </button>
+
+</form>
+</div>

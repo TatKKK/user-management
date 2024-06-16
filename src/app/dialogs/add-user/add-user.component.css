@@ -1,0 +1,26 @@
+
+input,
+select {
+  width: 100%;
+  padding: 6px 8px;
+  background: #fff;
+  border: 1px solid #a1a1a1;
+  border-radius: 2px;
+  box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.1),
+    0 0 5px 2px rgba(212, 212, 212, 0);
+  font-size: var(--fs-small);
+  line-height: 16px;
+}
+/* input:focus {
+  border:none;
+  outline: none;
+}  */
+select option:checked{
+  --pill-accent: var(--bright-blue);
+  background: color-mix(in srgb, var(--pill-accent) 5%, transparent);
+}
+form{
+  display:flex;
+  flex-direction: column;
+  gap:10px;
+}

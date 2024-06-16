@@ -1,0 +1,176 @@
+<style>
+  .pill-group {
+    display: flex;
+    flex-direction: row;
+    align-items: start;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    padding:20px 0;
+  }
+
+  .pill {
+    display: flex;
+    align-items: center;
+    --pill-accent: var(--bright-blue);
+    background: color-mix(in srgb, var(--pill-accent) 5%, transparent);
+    color: var(--pill-accent);
+    padding-inline: 0.75rem;
+    padding-block: 0.375rem;
+    border-radius: 2.75rem;
+    border: 0;
+    transition: background 0.3s ease;
+    font-family: var(--inter-font);
+    font-size: 0.875rem;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 1.4rem;
+    letter-spacing: -0.00875rem;
+    text-decoration: none;
+  }
+
+  .pill:hover {
+    background: color-mix(in srgb, var(--pill-accent) 15%, transparent);
+  }
+
+  .pill-group .pill:nth-child(6n + 1) {
+    --pill-accent: var(--bright-blue);
+  }
+  .pill-group .pill:nth-child(6n + 2) {
+    --pill-accent: var(--french-violet);
+  }
+  .pill-group .pill:nth-child(6n + 3),
+  .pill-group .pill:nth-child(6n + 4),
+  .pill-group .pill:nth-child(6n + 5) {
+    --pill-accent: var(--hot-red);
+  }
+
+  .pill-group svg {
+    margin-inline-start: 0.25rem;
+  }
+
+</style>
+
+
+
+<div class="pill-group">
+  @for (item of [
+  {title:'+ Add task'},
+  { title: 'Total Completed Tasks:(' + (completedTasksCount$ | async) + ')' },
+    { title: 'Total Pending Tasks:(' + (inProgressTasksCount$ | async) + ')' },
+    { title: 'Total Overdue Tasks:(' + (overdueTasksCount$ | async) + ')' },
+    {title:'Employee Reports'}    
+  ]; track item.title) {
+    <a
+      class="pill"
+      (click)="handleClick(item, $event)"
+    >
+      <span>{{ item.title }}</span>
+      <!-- <svg
+        xmlns="http://www.w3.org/2000/svg"
+        height="14"
+        viewBox="0 -960 960 960"
+        width="14"
+        fill="currentColor"
+      >
+        <path
+          d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h560v-280h80v280q0 33-23.5 56.5T760-120H200Zm188-212-56-56 372-372H560v-80h280v280h-80v-144L388-332Z"
+        />
+      </svg> -->
+    </a>
+  }
+</div>
+
+<div class="no-data">
+  <p *ngIf="tasks.length<1 && !isLoading">No tasks available</p>
+</div>
+<p-table [value]="tasks" 
+
+[scrollable]="true"
+[loading]="isLoading"
+>
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="Name">TASK <p-sortIcon field="Name" /></th>
+        <th>DESCRIPTION</th>
+        <th pSortableColumn="UserId">ASSIGNEE <p-sortIcon field="Name" /></th>
+        <th pSortableColumn="Status">STAGE <p-sortIcon field="Name" /></th>
+        <th pSortableColumn="DueDate">DUE DATE <p-sortIcon field="Name" /></th>  
+        <th pSortableColumn="Level">Level <p-sortIcon field="Name" /></th>    
+        <th><span class="pi pi-wave-pulse"></span> </th>   
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-task>
+      <tr [ngClass]="{'overdue': getStatusName(task.Status) === 'Overdue'}">
+        <td>{{task.Name}}</td>
+        <td>{{task.Description}}</td>
+        <td>{{ task.AssigneeId }}</td>
+        <td >{{getStatusName(task.Status)}}</td>
+        <td >{{task.DueDate | date: 'yyyy-MM-dd'}} </td>  
+        <td>{{task.Level}} </td>     
+        <td>
+          <button (click)="openTaskDetails(task)">View Details</button>
+        </td>         
+      </tr>
+    </ng-template>
+    <p *ngIf="tasks.length<1&&!isLoading">No tasks available</p>
+
+   
+    <P *ngIf="isLoading">Loading...</P>
+  </p-table>
+
+  <div class="user-list">
+    <h2>View Employee Reports</h2>
+    <div class="input-group">
+      <select (change)="onUserChange($event)" >
+        <option value="">Choose employee</option>
+        <option *ngFor="let user of users" [value]="user.UserId">{{user.Username}} </option>
+      </select>
+    </div>
+    <!-- <ul>
+      <li *ngFor="let user of users" (click)="selectUser(user)">
+        {{ user.Username }}
+      </li>
+    </ul> -->
+  </div>
+  
+  <div class="task-reports" *ngIf="selectedUser">
+    <h2>Task Reports for {{ selectedUser.Username }}</h2>
+    <div class="pill-group">
+      <a class="pill" (click)="handleUserTaskReport($event, 'completed')">
+        Tasks Completed
+      </a>
+      <a class="pill" (click)="handleUserTaskReport($event, 'inProgress')">
+        Tasks InProgress
+      </a>
+      <a class="pill" (click)="handleUserTaskReport($event, 'overdue')">
+        Tasks Overdue
+      </a>
+    </div>
+  
+    <p-table [value]="tasks" [scrollable]="true" [loading]="isLoading" *ngIf="tasks.length>0">
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="Name">TASK <p-sortIcon field="Name" /></th>
+          <th>DESCRIPTION</th>
+          <th pSortableColumn="UserId">ASSIGNEE <p-sortIcon field="UserId" /></th>
+          <th pSortableColumn="Status">STAGE <p-sortIcon field="Status"/></th>
+          <th pSortableColumn="DueDate">DUE DATE <p-sortIcon field="DueDate" /></th>
+          <th pSortableColumn="Level">Level <p-sortIcon field="Level" /></th>
+          <th><span class="pi pi-wave-pulse"></span></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-task>
+        <tr [ngClass]="{'overdue': getStatusName(task.Status) === 'Overdue'}">
+          <td>{{task.Name}}</td>
+          <td>{{task.Description}}</td>
+          <td>{{ task.AssigneeId }}</td>
+          <td>{{getStatusName(task.Status)}}</td>
+          <td>{{task.DueDate | date: 'yyyy-MM-dd'}}</td>
+          <td>{{task.Level}}</td>
+          <td>
+            <button (click)="openTaskDetails(task)">View Details</button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>

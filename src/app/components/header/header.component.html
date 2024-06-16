@@ -1,0 +1,28 @@
+<div *ngIf="isLoggedIn$|async" class="user-greeting"> 
+    <ng-container *ngIf="userRole$| async as userRole">
+      <div class="greeting-txt">       
+        <span (click)="routeBasedOnUserRole()">           
+            {{ userRole }}
+        </span>
+      </div>
+    <button class="logout">        
+        <a routerLink="/" (click)="logout()"> Logout <span class="pi pi-sign-out"></span>
+        </a>
+    </button>
+    </ng-container>
+  </div>
+
+  <!-- <div *ngIf="isLoggedIn" class="user-greeting"> 
+    <ng-container *ngIf="userRole">
+      <div class="greeting-txt">       
+        <span >
+           
+            {{ userRole }} es behaviorSubjectidan
+          </span>
+      </div>
+    <button class="logout">        
+        <a routerLink="/" (click)="logout()"> Logout <span class="pi pi-sign-out"></span>
+           </a>
+    </button>
+    </ng-container>   
+  </div> -->

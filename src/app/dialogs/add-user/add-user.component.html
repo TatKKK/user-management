@@ -1,0 +1,55 @@
+<p-toast></p-toast>
+<form [formGroup]="userForm" (ngSubmit)="addUser()">
+  <input id="Fname" type="text" formControlName="Fname" placeholder="Enter first name.."
+             [ngClass]="{'error': userForm.controls['Fname'].errors && userForm.controls['Fname'].dirty 
+             && userForm.controls['Fname'].touched}">
+    <span *ngIf="userForm.controls['Fname'].errors && userForm.controls['Fname'].dirty" class="alert">
+      Name should be minimum 3 characters
+    </span>   
+    <input id="Lname" type="text" formControlName="Lname" placeholder="Enter last name.."
+    [ngClass]="{'error': userForm.controls['Lname'].errors && userForm.controls['Lname'].dirty 
+    && userForm.controls['Lname'].touched}">
+<span *ngIf="userForm.controls['Lname'].errors && userForm.controls['Lname'].dirty" class="alert">
+Lastname should be minimum 5 characters
+</span>   
+
+<input id="Phone" type="text" formControlName="Phone" placeholder="Enter Phone.."
+[ngClass]="{'error': userForm.controls['Phone'].errors && userForm.controls['Phone'].dirty 
+&& userForm.controls['Phone'].touched}">
+<span *ngIf="userForm.controls['Phone'].errors && userForm.controls['Phone'].dirty" class="alert">
+Invalid phone number
+</span>   
+
+<input id="Email" type="text" formControlName="Email" placeholder="Enter Email.."
+[ngClass]="{'error': userForm.controls['Email'].errors && userForm.controls['Email'].dirty 
+&& userForm.controls['Email'].touched}">
+<span *ngIf="userForm.controls['Email'].errors && userForm.controls['Email'].dirty" class="alert">
+Invalid email.
+</span>   
+
+      <input id="Username" type="text" formControlName="Username" placeholder="Enter username.."
+             [ngClass]="{'error': userForm.controls['Username'].errors && userForm.controls['Username'].dirty 
+             && userForm.controls['Username'].touched}">
+    <span *ngIf="userForm.controls['Username'].errors && userForm.controls['Username'].dirty" class="alert">
+      Username should be minimum 6 symbols
+    </span>   
+      <input id="Password" type="password" formControlName="Password"  placeholder="Enter password.."
+             [ngClass]="{'error': userForm.controls['Password'].errors && userForm.controls['Password'].dirty 
+             && userForm.controls['Password'].touched}">
+    <span *ngIf="userForm.controls['Password'].errors && userForm.controls['Password'].dirty" class="alert">
+      Password should include at least 1 upper case, numeric, and special character
+    </span>
+      <select id="RoleId" formControlName="RoleId">
+        <option value="" disabled selected >--- Select role--- </option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>        
+      </select>
+      <!-- <div class="pre"> 
+        <p>Form Status:{{userForm.status}} </p>
+        <pre>{{this.userForm.value| json}} </pre>
+      </div> -->
+    <button type="submit" class="submit-btn" [disabled]="!userForm.valid">Submit</button>
+  </form>
+  

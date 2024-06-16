@@ -1,0 +1,35 @@
+<p-toast></p-toast>
+<div class="editTask-container">
+  <ng-container *ngIf="isEditMode; else viewTemplate">
+    <form [formGroup]="editTaskForm" (ngSubmit)="saveTaskChanges()" class="edit-task">
+      <div class="input-group">
+        <input type="text" formControlName="Name" placeholder="Task Name.." >
+      </div>
+      <div class="input-group">
+        <input type="text" formControlName="Description" placeholder="Task Description">
+      </div>
+      <div class="input-group">
+        <input type="date" formControlName="DueDate">
+      </div>
+
+      <button type="submit" class="submit-btn" [disabled]="!editTaskForm.valid">
+        Save Changes
+      </button>
+    </form>
+  </ng-container>
+
+<ng-template #viewTemplate>
+  <div class="card">
+    <p><strong>Name:</strong> {{ task.Name }}</p>
+    <p><strong>Description:</strong> {{ task.Description }}</p>
+    <p><strong>Create Date:</strong> {{ task.CreateDate | date: 'yyyy-MM-dd' }}</p>
+    <p><strong>Modify Date:</strong> {{ task.ModifyDate | date: 'yyyy-MM-dd' }}</p>    
+    <p><strong>Due Date:</strong> {{ task.DueDate | date: 'yyyy-MM-dd' }}</p>    
+    <p><strong>Assignee:</strong> {{ assignee }}</p>
+    <p><strong>Task Owner:</strong> {{ owner}}</p> 
+  </div>
+<div>
+    <button type="button" class="edit-btn" (click)="toggleEditMode(task, $event)">Edit</button>
+    <button type="button" class="delete-btn" (click)="deleteTask(task)">Delete</button>
+</div>
+</ng-template>
