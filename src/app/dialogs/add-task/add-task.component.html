@@ -1,36 +1,36 @@
-<div class="addTask-container">
-  <form [formGroup]="this.addTaskForm" (ngSubmit)="addTask()" class="add-task">
+<!-- <div class="Task-container">
+  <form [formGroup]="this.taskForm" (ngSubmit)="addTask()" class="add-task">
     <div class="input-group">
-        <input type="text" formControlName="Name" placeholder="Task Name.." >
+        <input type="text" formControDescription="Name" placeholder="Task Name.." >
     </div>
     <div class="input-group">
-        <input type="text" formControlName="Description" placeholder="Task Description">
+        <input type="text" formControDescription="Description" placeholder="Task Description">
     </div>
     <div class="input-group">
-      <input type="text" onfocus="type='date'" formControlName="DueDate"
+      <input type="text" onfocus="type='date'" formControDescription="DueDate"
       placeholder="Choose duedate"
       
       [ngClass]="{
         error:
-          addTaskForm.controls['DueDate'].errors?.['invalidDate'] &&
-          addTaskForm.controls['DueDate'].dirty &&
-          addTaskForm.controls['DueDate'].touched
+          taskForm.controls['DueDate'].errors?.['invalidDate'] &&
+          taskForm.controls['DueDate'].dirty &&
+          taskForm.controls['DueDate'].touched
       }">
     </div>
     
-    <span *ngIf="addTaskForm.controls['DueDate'].errors?.['invalidDate']" class="alert">
+    <span *ngIf="taskForm.controls['DueDate'].errors?.['invalidDate']" class="alert">
       Due date must be today or in the future.
     </span>
-    <!-- <div class="input-group">
-        <select formControlName="TaskLevel">
-        <option value=""> Choose task level</option>
-        <option value="EAsy"> Easy</option>
-        <option value="Medium">Medium</option>
-        <option value="Advanced">Advanced</option>
-     </select>
-    </div> -->
     <div class="input-group">
-        <select formControlName="UserId">
+        <select formControDescription="TaskLevel">
+        <option value=""> Choose task level</option>
+        <option value="Low"> Low</option>
+        <option value="Medium">Medium</option>
+        <option value="High">High</option>
+     </select>
+    </div>
+    <div class="input-group" *ngIf="!this.task">
+        <select formControDescription="UserId">
           <option value="">Choose employee</option>
           <option *ngFor="let user of users" [value]="user.UserId">{{user.Username}} </option>
         </select>
@@ -38,12 +38,171 @@
       
 
       <div class="pre">
-        <p>Form Status:{{ addTaskForm.status }}</p>
-        <pre>{{ this.addTaskForm.value | json }} </pre>
+        <p>Form Status:{{ taskForm.status }}</p>
+        <pre>{{ this.taskForm.value | json }} </pre>
       </div>
-      <button type="submit" class="submit-btn" [disabled]="!addTaskForm.valid">
+      <button type="submit" class="submit-btn" [disabled]="!taskForm.valid">
         Submit
       </button>
 
 </form>
+</div> -->
+<!-- 
+
+
+<div class="task-container">
+  <form [formGroup]="this.taskForm" (ngSubmit)="saveTask()" class="task-form">
+    <div class="input-group">
+      <input type="text" formControDescription="Name" placeholder="Task Name.." />
+    </div>
+    <div class="input-group">
+      <input type="text" formControDescription="Description" placeholder="Task Description" />
+    </div>
+    <div class="input-group">
+      <input type="text" onfocus="type='date'" formControDescription="DueDate"
+      placeholder="Choose due date"
+      [ngClass]="{
+        error:
+          taskForm.controls['DueDate'].errors?.['invalidDate'] &&
+          taskForm.controls['DueDate'].dirty &&
+          taskForm.controls['DueDate'].touched
+      }" />
+    </div>
+    <span *ngIf="taskForm.controls['DueDate'].errors?.['invalidDate']" class="alert">
+      Due date must be today or in the future.
+    </span>
+    <div class="input-group" *ngIf="!this.task">
+      <select formControDescription="TaskLevel">
+        <option value="">Choose task level</option>
+        <option value="Low">Low</option>
+        <option value="Medium">Medium</option>
+        <option value="High">High</option>
+      </select>
+    </div>
+    <div class="input-group" *ngIf="!this.task">
+      <select formControDescription="UserId">
+        <option value="">Choose employee</option>
+        <option *ngFor="let user of users" [value]="user.UserId">{{ user.Username }}</option>
+      </select>
+    </div>
+    <div class="pre">
+      <p>Form Status: {{ taskForm.status }}</p>
+      <pre>{{ this.taskForm.value | json }}</pre>
+    </div>
+    <button type="submit" class="submit-btn" [disabled]="!taskForm.valid">
+      {{ isEditMode ? 'Save Changes' : 'Submit' }}
+    </button>
+  </form>
+</div> -->
+
+
+<p-toast></p-toast>
+
+<div class="form-container">
+  <p-toast></p-toast>
+  <div class="overlay-grey">
+    <div class="form-title">
+      <h2 *ngIf="!isEditMode">
+        Add Task<i class="pi pi-pen-to-square" style="font-size: 1.6rem"></i>
+      </h2>
+      <h2 *ngIf="isEditMode">
+        Edit Task<i class="pi pi-pen-to-square" style="font-size: 1.6rem"></i>
+      </h2>
+    </div>
+    <form [formGroup]="taskForm" (ngSubmit)="onSubmit()" class="form-group">
+        <label for="Name">
+          Task Name: <span *ngIf="!isEditMode" [ngClass]="{
+            hide:
+              !taskForm.controls['Name'].errors &&
+              taskForm.controls['Name'].dirty &&
+              taskForm.controls['Name'].touched
+          }" class="pi pi-asterisk superscript" style="color: var(--gray-500); font-size: var(--fs-xs)">
+          </span>
+          <div class="input-group">
+            <input type="text" formControlName="Name" [ngClass]="{
+              error:
+                taskForm.controls['Name'].errors &&
+                taskForm.controls['Name'].dirty
+            }" />
+          </div>
+          <div>
+            <span *ngIf="taskForm.controls['Name']?.errors?.['minlength'] && taskForm.controls['Name'].dirty
+            &&taskForm.controls['Name'].touched" class="alert">
+              Task name must be at least 4 characters
+            </span>
+          </div>
+        </label>
+
+        <label for="Description">
+          Describe Task <span *ngIf="!isEditMode" [ngClass]="{
+            hide:
+              !taskForm.controls['Description'].errors &&
+              taskForm.controls['Description'].dirty &&
+              taskForm.controls['Description'].touched
+          }" class="pi pi-asterisk superscript" style="color: var(--gray-500); font-size: var(--fs-xs)">
+          </span>
+          <div class="input-group">
+            <input type="text" formControlName="Description" [ngClass]="{
+              error:
+                taskForm.controls['Description'].errors &&
+                taskForm.controls['Description'].dirty
+            }" />
+          </div>
+          <div>
+            <span *ngIf="taskForm.controls['Description']?.errors?.['minlength'] && 
+            taskForm.controls['Description'].dirty&&
+          taskForm.controls['Description'].touched" class="alert">
+              Last name must be at least 4 characters
+            </span>
+          </div>
+          <div>
+            <span *ngIf="taskForm.controls['Description']?.errors?.['pattern'] && taskForm.controls['Description'].dirty
+            &&taskForm.controls['Description'].touched" class="alert">
+              Invalid pattern
+            </span>
+          </div>
+        </label>
+
+        <div class="input-group">
+          <input type="text" onfocus="type='date'" formControlName="DueDate"
+          placeholder="Choose due date"
+          [ngClass]="{
+            error:
+              taskForm.controls['DueDate'].errors?.['invalidDate'] &&
+              taskForm.controls['DueDate'].dirty &&
+              taskForm.controls['DueDate'].touched
+          }" />
+        </div>
+        <span *ngIf="taskForm.controls['DueDate'].errors?.['invalidDate']" class="alert">
+          Due date must be today or in the future.
+        </span>
+       <label for="taskLevel"> Choose priority Level
+        <div class="input-group">
+          <select formControlName="TaskLevel">
+            <option value="">Choose task level</option>
+  <option [value]="0">Low</option>
+  <option [value]="1">Medium</option>
+  <option [value]="2">High</option>
+          </select>
+        </div>
+       </label>
+       <label for="userId" *ngIf="!this.task"> Assign task to:
+        <div class="input-group" >
+          <select formControlName="UserId">
+            <option value="">Choose employee</option>
+            <option *ngFor="let user of users" [value]="user.UserId">{{ user.Username }}</option>
+          </select>
+        </div>
+       </label>
+
+       <div class="pre">
+        {{taskForm.status}}
+        {{taskForm.value|json}}
+       </div>
+      <button type="submit" class="submit-btn" [disabled]="!taskForm.valid">
+        Save changes
+      </button>
+    </form>
+  </div>
 </div>
+

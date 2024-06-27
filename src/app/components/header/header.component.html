@@ -1,4 +1,4 @@
-<div *ngIf="isLoggedIn$|async" class="user-greeting"> 
+<div *ngIf="isLoggedIn$|async" class="user-greeting paddings-small border-bottom"> 
     <ng-container *ngIf="userRole$| async as userRole">
       <div class="greeting-txt">       
         <span (click)="routeBasedOnUserRole()">           

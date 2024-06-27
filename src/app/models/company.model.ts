@@ -5,7 +5,8 @@ export class Company {
         public CompanyId?: number,
         public Name?: string,
         public TaxCode?: string,
-        public Adress?: string,
-        public Users: User[] = []
+        public Address?: string,
+        public Users: User[] = [],
+        public UserCount?:number
     ) { }
 }

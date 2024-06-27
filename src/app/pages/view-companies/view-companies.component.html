@@ -101,13 +101,13 @@
     <img src="../../../assets/daisy.avif" alt="pix should be here">
     <div class="card-info">
       <h3>{{companyAndUser.Company?.Name}} </h3>
-      <h2><span>Tax Code:</span>
-        {{ companyAndUser.Company?.TaxCode }}</h2>
+      <!-- <h2><span>Tax Code:</span>
+        {{ companyAndUser.Company?.TaxCode }}</h2> -->
         <h2><span class="pi pi-map-marker"> Address:</span>
-        {{companyAndUser.Company?.Adress}}</h2>
+        {{companyAndUser.Company?.Address}}</h2>
       <h2 *ngIf="companyAndUser.Company">
-        <span class="pi pi-user"> Representative:</span>
-        {{companyAndUser.Company.Users[0].Username}} </h2>
+        <span class="pi pi-user"> Total {{companyAndUser.Company.UserCount}} Users</span>
+        </h2>
     </div>
     <button class="card-btn">
       <a href="/">Visit page 

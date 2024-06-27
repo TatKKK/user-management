@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { User } from '../../models/user.model';
 import { Task } from '../../models/task.model';
 import { UsersService } from '../../services/users.service';
@@ -13,7 +13,8 @@ import { Observable } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 import { TaskStatus } from '../../models/task.model';
 import { TaskLevel } from '../../models/task.model';
-import { ViewTaskComponent } from '../../dialogs/view-task/view-task.component';
+import { Table } from 'primeng/table';
+import { UserReport } from '../../models/user.model';
 
 
 @Component({
@@ -21,16 +22,31 @@ import { ViewTaskComponent } from '../../dialogs/view-task/view-task.component';
   templateUrl: './manager.component.html',
   styleUrl: './manager.component.css'
 })
+
+
 export class ManagerComponent implements OnInit {
+
+  
+  isLoading:boolean=true;
+  showTasks: boolean = false;
+  showAddTask:boolean = false;
+  showReports: boolean = false;
+  
+ reports:UserReport[]=[];
+
+
+  companyId:number | null  = null;
+
   users:User[]=[];
   user!:User;
 tasks:Task[]=[];
 task!:Task;
+
 userRole!:string;
 addTaskForm!:FormGroup;
-isLoading:boolean=false;
 
-selectedUser!: User;
+
+// selectedUser!: User;
 
 completedTasksCount$: Observable<number>;
 inProgressTasksCount$:Observable<number>;
@@ -52,41 +68,36 @@ constructor(
   this.overdueTasksCount$=this.tasksService.overdueTasks$;
 }
 
-openAddTaskDialog(): void {
+openTaskDialog(task:Task): void {
   const ref = this.dialogService.open(AddTaskComponent, {
-    header: 'Add Task',
-    width: '30%',
+    width: '40%',
     styleClass:'custom-addTask',
     // closable:false,
     contentStyle: {"max-height": "100vh", "overflow": "auto"},
     draggable: true,
     resizable: true,
-    dismissableMask: true
+    dismissableMask: true,
+    data:{task:task||null}
   });  
  
 }
+
 handleClick(item: any, event: MouseEvent): void {
   event.preventDefault();
 
   switch (true) {
-    case item.title.includes("Add task"):
-      this.openAddTaskDialog();
+    case item.title.includes("Task"):
+     this.showTasks=true;
+     this.showAddTask = true;
+     this.showReports=false;
       break;
-
-    case item.title.includes("Completed Tasks"):
-      this.tasksCompleted();
-      break;
-
-    case item.title.includes("Pending Tasks"):
-      this.tasksInProgress();
-      break;
-
-    case item.title.includes("Overdue Tasks"):
-      this.tasksOverdue();
-      break;
-
+      case item.title.includes("+"):
+       this.openTaskDialog(this.task);
+         break;
     case item.title.includes("Reports"):
-      this.router.navigate(['/reports']);
+      this.showTasks=false;
+      this.showAddTask=false;
+      this.showReports=true;
       break;
 
     default:
@@ -94,6 +105,16 @@ handleClick(item: any, event: MouseEvent): void {
       break;
   }
 }
+
+menuItems = [
+  { title: '+ Add task', show: true},
+  { title: 'Tasks', show: true },
+  { title: 'Reports', show: true }
+];
+trackByTitle(index: number, item: any): string {
+  return item.title;
+}
+
 
 private routeBasedOnUserRole(): void {
   if (this.userRole === 'admin') {
@@ -103,136 +124,53 @@ private routeBasedOnUserRole(): void {
   }
 }
 
-tasksCompleted(){
-  this.tasksService.tasks$.subscribe(
-    tasks => {this.tasks=tasks}
-  );
-  this.tasksService.getCompleted();
-};
-tasksInProgress(){
-  this.tasksService.tasks$.subscribe(
-    tasks=>{this.tasks=tasks}
-  )
-  this.tasksService.tasksInProgress();
-}
-tasksOverdue(){
-  this.tasksService.tasks$.subscribe(
-    tasks=>{this.tasks=tasks}
-  )
-  this.tasksService.tasksOverdue();
-}
-
 getTasks(){
   this.tasksService.tasks$.subscribe(
     tasks => {this.tasks=tasks}
   );
-  this.tasksService.getTasks();
+  if(this.companyId)
+  this.tasksService.getTasks(this.companyId);
 };
-getTasksByUser(UserId?: number | undefined){
-  this.tasksService.tasks$.subscribe(
-    tasks=>{this.tasks=tasks}
-  )
-}
-getUsers(): void {
+
+getAssignees(): void {
   this.usersService.users$.subscribe(users => {
     this.users = users;
   });
-  this.usersService.getUsers();
+  this.usersService.getAssignees();
 }
 
 
 
 ngOnInit(): void {
-  this.isLoading=true;
-  this.getTasks();
-  this.getUsers();
-  this.tasksService.getTasks();
-  this.tasksService.tasksCompleted();
-  this.tasksService.tasksInProgress();
-  this.tasksService.tasksOverdue();
-  this.isLoading=false;
+
+  this.companyId=this.authService.getCompanyId();   
+  if(this.companyId){
+    this.getTasks();
+  
+    this.isLoading=false;
+  }
+  this.getReports();
+
+
+  this.getAssignees();
+  
   
 }
+@ViewChild('dt2') dt2: Table | undefined;
 
-// getStatusName(statusValue:number):string{
-//   return TaskStatus[statusValue];
-// }
-
-// getLevelName(levelValue:number):string{
-//   return TaskLevel[levelValue];
-// }
-
-
-openTaskDetails(task:Task): void {
-  const ref = this.dialogService.open(ViewTaskComponent, {
-    data:{
-      task:task
-    },
-    header: 'Task Details',
-    width: '30%',
-    styleClass:'custom-task-details',
-    // closable:false,
-    contentStyle: {"max-height": "100vh", "overflow": "auto"},
-    draggable: true,
-    resizable: true,
-    dismissableMask: true
-  });  
- 
+applyFilterGlobal($event: any, stringVal: any) {
+  this.dt2!.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
 }
 
 
-handleUserTaskReport(event: MouseEvent, type: string): void {
-  event.preventDefault();
-  if (this.selectedUser) {
-    if (type === 'completed'&&this.selectedUser.UserId) {
-      this.tasksService.tasksCompletedByUser(this.selectedUser.UserId);
-    } else if (type === 'inProgress'&&this.selectedUser.UserId) {
-      this.tasksService.tasksInProgressByUser(this.selectedUser.UserId);
-    } else if (type === 'overdue'&&this.selectedUser.UserId) {
-      this.tasksService.tasksOverdueByUser(this.selectedUser.UserId);
-    }
-  }
-}
-onUserChange(event:Event):void{
-  const selectElement = event.target as HTMLSelectElement;
-    const userId = selectElement.value;
 
-    if (userId) {
-      const selectedUser = this.users.find(user => user.UserId === +userId);
-      if (selectedUser) {
-        this.selectUser(selectedUser);
-      }
-    }
-}
-
-selectUser(user: User): void {
-  this.selectedUser = user;
-  this.getTasksByUser(user.UserId);
-  console.log(user.UserId)
-}
-
-getUserFullName(assigneeId: number): string {
-  const user = this.users.find(user => user.UserId === assigneeId);
-  return user ? `${user.Fname} ${user.Lname}` : 'Unknown';
-}
-
-
-getCompletedTasksByUser(assigneeId: number): number {
-  return this.tasksService.getCompletedTasksByUser(assigneeId);
-}
-
-getInProgressTasksByUser(assigneeId: number): number {
-  return this.tasksService.getInProgressTasksByUser(assigneeId);
-}
-
-getOverdueTasksByUser(assigneeId: number): number {
-  return this.tasksService.getOverdueTasksByUser(assigneeId);
-}
-
+/*| Get enum values */
 getStatusName(status: number): string {
   switch (status) {
     case TaskStatus.Completed:
       return 'Completed';
+    case TaskStatus.New:
+      return 'New';
     case TaskStatus.InProgress:
       return 'In Progress';
     case TaskStatus.Overdue:
@@ -242,6 +180,43 @@ getStatusName(status: number): string {
   }
 }
 
+getLevelName(level: number): string {
+  switch (level) {
+    case TaskLevel.Low:
+      return 'Low';
+    case TaskLevel.Medium:
+      return 'Medium';
+    case TaskLevel.High:
+      return 'High';
+    
+    default:
+      return 'Unknown';
+  }
+}
+
+
+/*|---- */
+
+getSeverity(level: TaskLevel) {
+  switch (level) {
+    case TaskLevel.Low:
+      return 'success';
+    case TaskLevel.Medium:
+      return 'info';
+    case TaskLevel.High:
+      return 'danger';
+    default:
+      return 'warning';
+  }
+}
+
+getReports(): void {
+  this.usersService.getReport().subscribe(
+  (data: UserReport[]) => {
+      this.reports = data;
+    }
+  )
+}
 
 
 }

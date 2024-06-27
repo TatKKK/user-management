@@ -35,12 +35,17 @@
   -moz-osx-font-smoothing: grayscale;
 
   --fs-xs:11px;
+  --fs-s:14px;
+  --fs-m:0.875rem;
+  --fs-l:20px;
+  --fs-xl:3.125rem;
+
 }
 
 
 
 h1 {
-  font-size: 3.125rem;
+  font-size: var(--fs-xl);
   color: var(--gray-900);
   font-weight: 500;
   line-height: 100%;
@@ -109,6 +114,13 @@ input:focus{
     gap: 15px;
 } */
 
+.custom-addUser header{
+  padding:0!important
+}
+
+.custom-addUser .p-dialog-header-icon{
+  display:none;
+}
 
 /* General */
 
@@ -160,3 +172,20 @@ color-mix(in srgb, var(--pill-accent) 5%, transparent);
 [disabled]{
   opacity:30%;
 }
+
+.border-bottom{
+  border-bottom: .1rem solid var(--gray-100);
+}
+
+.paddings-small{
+  padding: 1.4rem 0;
+}
+
+.fit-content {
+  width: fit-content;
+  white-space: nowrap;
+}
+
+
+/*| primeng table */
+

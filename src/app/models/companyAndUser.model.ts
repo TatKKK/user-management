@@ -9,10 +9,25 @@ export class Registration {
     ) { }
 }
 
-export interface PaginatedCompanyResult {
-    TotalCount: number
-    PageSize: number
-    PageNumber: number
-    Companies: Company[]
-  }
+
+
+export class CompanyValidator {
+    constructor(
+        CompanyId?: number,
+        Name?: string,
+        TaxCode?: string,
+        Address?: string,
+        UserId?: number,
+        Fname?: string,
+        Lname?: string,
+        Phone?: string,
+        Email?: string,
+        Username?: string,
+        Password?: string,
+        ConfirmPassword?: string,
+        IsActive?: boolean,
+        RoleId?: number,
+        Role?: { Id?: number, Name?: string }
+    ){}
   
+  }

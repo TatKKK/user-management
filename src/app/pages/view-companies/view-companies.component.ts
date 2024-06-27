@@ -19,6 +19,7 @@ isLoading:boolean=false;
 
 company!:Registration;
 companies:Registration[]=[];
+countUsers:number=0;
 
 selectedCompany!: Registration;
 

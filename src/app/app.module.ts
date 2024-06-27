@@ -21,12 +21,19 @@ import { ManagerComponent } from './pages/manager/manager.component';
 //import { MainInterceptor } from './interceptors/main-interceptors';
 import { AddTaskComponent } from './dialogs/add-task/add-task.component';
 import { ButtonModule } from 'primeng/button';
-import { ViewTaskComponent } from './dialogs/view-task/view-task.component';
 import { AssigneePageComponent } from './pages/assignee-page/assignee-page.component';
 import { MainInterceptor } from './interceptors/main-interceptors';
 import { ReportsComponent } from './pages/reports/reports.component';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
+import { DropdownModule } from 'primeng/dropdown';
+import { FooterComponent } from './components/footer/footer.component';
+import { TagModule } from 'primeng/tag';
+import { SliderModule } from 'primeng/slider';
+import { ProgressBarModule } from 'primeng/progressbar';
+import { PaginatorModule } from 'primeng/paginator';
+import { ViewTaskComponent } from './dialogs/view-task/view-task.component';
+
 
 
 @NgModule({
@@ -41,9 +48,10 @@ import { InputIconModule } from 'primeng/inputicon';
     HeaderComponent,
     ManagerComponent,
     AddTaskComponent,
-    ViewTaskComponent,
     AssigneePageComponent,
-    ReportsComponent
+    ReportsComponent,
+    FooterComponent,
+    ViewTaskComponent
   ],
   imports: [
     BrowserModule,
@@ -57,10 +65,13 @@ import { InputIconModule } from 'primeng/inputicon';
     TableModule,
     ButtonModule,
     IconFieldModule,
-    InputIconModule
-
-
-  ],
+    InputIconModule,
+    DropdownModule,
+    TagModule,
+    SliderModule,
+    ProgressBarModule,
+    PaginatorModule
+    ],
   providers: [ { provide: HTTP_INTERCEPTORS, useClass: MainInterceptor, multi: true }, DataViewModule,MessageService, DialogService, DynamicDialogRef],
   bootstrap: [AppComponent],
   

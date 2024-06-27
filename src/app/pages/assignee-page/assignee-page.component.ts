@@ -3,11 +3,12 @@ import { Task } from '../../models/task.model';
 import { TasksService } from '../../services/tasks.service';
 import { TaskStatus } from '../../models/task.model';
 import { TaskLevel } from '../../models/task.model';
-import { ViewTaskComponent } from '../../dialogs/view-task/view-task.component';
 import { DialogService } from 'primeng/dynamicdialog';
 import { Observable } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
-
+import { MessageService } from 'primeng/api';
+import { ViewTaskComponent } from '../../dialogs/view-task/view-task.component';
+import { UsersService } from '../../services/users.service';
 @Component({
   selector: 'app-assignee-page',
   templateUrl: './assignee-page.component.html',
@@ -15,10 +16,15 @@ import { AuthService } from '../../services/auth.service';
 })
 export class AssigneePageComponent implements OnInit {
   tasks:Task[]=[];
+  task!:Task;
 
+  userId!:number;
+  username!:string;
   userRole!:string;
 
   isLoading:boolean=false;
+
+  companyId:number | null  = null;
 
 
 userRole$: Observable<'admin' | 'developer' | 'manager' | 'operator' | 'unknown'>;
@@ -26,7 +32,9 @@ TaskStatus!: TaskStatus;
 
   constructor(
     private authService:AuthService,
+    private usersService:UsersService,
     private tasksService:TasksService,
+    private messageService:MessageService,
     private dialogService:DialogService
   ){
     this.userRole$ = this.authService.getUserRole();
@@ -34,8 +42,36 @@ TaskStatus!: TaskStatus;
 
   ngOnInit(): void {
     this.isLoading=true;
-    this.getTasks();
+    this.tasksService.tasks$.subscribe(
+      tasks =>{this.tasks=tasks}
+    );
+   
+      this.companyId=this.authService.getCompanyId();   
+      if(this.companyId)
+    this.tasksService.getTasks(this.companyId);
+  
+
+  this.usersService.getUser(this.userId);
     this.isLoading=false;
+    
+  }
+
+  openViewTaskDialog(task:Task):void{
+    this.startTask(task);
+    const ref=this.dialogService.open(ViewTaskComponent, {
+      header: 'Task Details',
+      width:'40%',
+      contentStyle:{"nax-height":"100vh", "overflow":"auto"},
+      styleClass:'custom-viewTask',
+      draggable:true,
+      dismissableMask:true,
+      resizable:true,
+      modal:true,
+      data:{task:task || null}
+    });
+    ref.onClose.subscribe(()=>{
+      //rame chavamato mere
+    })
   }
 
   changeStatus(task: Task) {
@@ -50,35 +86,20 @@ TaskStatus!: TaskStatus;
       });
     }
   }
-  getStatusName(status: number): string {
-    switch (status) {
-      case 0:
-        return 'New';
-      case 1:
-        return 'InProgress';
-      case 2:
-        return 'Completed';
-      case 3:
-        return 'Overdue';
-      case 4:
-        return 'Cancelled';
-      default:
-        return '';
-    }
-  }
 
-  getLevelName(level: number): string {
-    switch (level) {
-      case 0:
-        return 'Easy';
-      case 1:
-        return 'Medium';
-      case 2:
-        return 'Advanced';
-      default:
-        return '';
+  startTask(task: Task) {
+    if (task.Status !== 2 && task.Status !== 3 && task.Id) {
+      this.tasksService.startTask(task.Id, 1).subscribe({
+        next: () => {
+          task.Status = 1; 
+        },
+        error: (error) => {
+          console.error('Error updating task status', error);
+        }
+      });
     }
   }
+ 
 
 getTasks(){
   this.tasksService.tasks$.subscribe(
@@ -86,46 +107,59 @@ getTasks(){
   );
 }
 
-openTaskDetails(task:Task): void {
-  const ref = this.dialogService.open(ViewTaskComponent, {
-    data:{
-      task:task
-    },
-    header: 'Task Details',
-    width: '30%',
-    styleClass:'custom-task-details',
-    // closable:false,
-    contentStyle: {"max-height": "100vh", "overflow": "auto"},
-    draggable: true,
-    resizable: true,
-    dismissableMask: true
-  });  
- 
-}
 
-taskStatusToString(status: TaskStatus): string {
+// taskStatusToString(status: TaskStatus): string {
+//   switch (status) {
+//     case TaskStatus.New:
+//       return 'New';
+//     case TaskStatus.InProgress:
+//       return 'In Progress';
+//     case TaskStatus.Completed:
+//       return 'Completed';
+//       case TaskStatus.Overdue:
+//         return 'Overdue';
+//     default:
+//       return 'Unknown';
+//   }
+// }
+
+// taskLevelToString(status: TaskLevel): string {
+//   switch (status) {
+//     case TaskLevel.Low:
+//       return 'Low';
+//     case TaskLevel.Medium:
+//       return 'Medium';
+//     case TaskLevel.High:
+//       return 'High';
+//     default:
+//       return 'Unknown';
+//   }
+// }
+
+getStatusName(status: number): string {
   switch (status) {
+    case TaskStatus.Completed:
+      return 'Completed';
     case TaskStatus.New:
       return 'New';
     case TaskStatus.InProgress:
       return 'In Progress';
-    case TaskStatus.Completed:
-      return 'Completed';
-      case TaskStatus.Overdue:
-        return 'Overdue';
+    case TaskStatus.Overdue:
+      return 'Overdue';
     default:
       return 'Unknown';
   }
 }
 
-taskLevelToString(status: TaskLevel): string {
-  switch (status) {
-    case TaskLevel.Easy:
-      return 'Easy';
+getLevelName(level: number): string {
+  switch (level) {
+    case TaskLevel.Low:
+      return 'Low';
     case TaskLevel.Medium:
       return 'Medium';
-    case TaskLevel.Advanced:
-      return 'Advanced';
+    case TaskLevel.High:
+      return 'High';
+    
     default:
       return 'Unknown';
   }

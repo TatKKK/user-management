@@ -15,8 +15,8 @@ import { Router } from '@angular/router'
 
 import { User } from '../../models/user.model'
 import { Company } from '../../models/company.model'
-import { isReactive } from '@angular/core/primitives/signals'
 import { Registration } from '../../models/companyAndUser.model'
+import { CompanyValidator } from '../../models/companyAndUser.model'
 
 
 @Component({
@@ -91,7 +91,7 @@ export class AddCompanyComponent {
           this.validateTaxCode
           ]
         ],
-        Adress: this.fb.group({
+        Address: this.fb.group({
           street: [''],
           city: [''],
           zip: ['']
@@ -102,7 +102,7 @@ export class AddCompanyComponent {
           [
             Validators.required,
             Validators.minLength(6),
-            Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{6,}$/)
+            Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/)
           ]
         ],
         ConfirmPassword: [
@@ -122,27 +122,22 @@ export class AddCompanyComponent {
 
   addCompany() {
     if (this.companyForm.valid) {
-        const registration = new Registration();
-        registration.Company = new Company();
-        registration.Company.Name = this.companyForm.get('Name')?.value;
-        registration.Company.TaxCode = this.companyForm.get('TaxCode')?.value;
-        registration.Company.Adress = `${this.companyForm.get('Adress.street')?.value}, ${this.companyForm.get('Adress.city')?.value}, ${this.companyForm.get('Adress.zip')?.value}`;
+      const companyValidator: CompanyValidator = {
+        Name: this.companyForm.get('Name')?.value,
+        TaxCode: this.companyForm.get('TaxCode')?.value,
+        Address: `${this.companyForm.get('Address.street')?.value}, ${this.companyForm.get('Address.city')?.value}, ${this.companyForm.get('Address.zip')?.value}`,
+        Fname: this.companyForm.get('Fname')?.value,
+        Lname: this.companyForm.get('Lname')?.value,
+        Phone: this.companyForm.get('Phone')?.value,
+        Email: this.companyForm.get('Email')?.value,
+        Username: this.companyForm.get('Username')?.value,
+        Password: this.companyForm.get('Password')?.value,
+        ConfirmPassword: this.companyForm.get('ConfirmPassword')?.value,
+        IsActive: true,
+        RoleId: 1,
+        Role: { Id: 1, Name: 'admin' }}
 
-        registration.AdminUser = new User();
-        registration.AdminUser.Fname = this.companyForm.get('Fname')?.value;
-        registration.AdminUser.Lname = this.companyForm.get('Lname')?.value;
-        registration.AdminUser.Phone = this.companyForm.get('Phone')?.value;
-        registration.AdminUser.Email = this.companyForm.get('Email')?.value;
-        registration.AdminUser.Username = this.companyForm.get('Username')?.value;
-        registration.AdminUser.Password = this.companyForm.get('Password')?.value;
-        registration.AdminUser.IsActive = true;
-        registration.AdminUser.RoleId = 1;
-        registration.AdminUser.Role = { Id: 1, Name: 'admin' };
-
-        console.log(registration);
-        
-
-        this.companiesService.addCompany(registration).subscribe({
+        this.companiesService.addCompany(companyValidator).subscribe({
             next: res => {
                 this.messageService.add({
                     severity: 'success',

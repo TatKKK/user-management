@@ -1,35 +1,50 @@
-<p-toast></p-toast>
-<div class="editTask-container">
-  <ng-container *ngIf="isEditMode; else viewTemplate">
-    <form [formGroup]="editTaskForm" (ngSubmit)="saveTaskChanges()" class="edit-task">
-      <div class="input-group">
-        <input type="text" formControlName="Name" placeholder="Task Name.." >
-      </div>
-      <div class="input-group">
-        <input type="text" formControlName="Description" placeholder="Task Description">
-      </div>
-      <div class="input-group">
-        <input type="date" formControlName="DueDate">
-      </div>
-
-      <button type="submit" class="submit-btn" [disabled]="!editTaskForm.valid">
-        Save Changes
-      </button>
-    </form>
-  </ng-container>
-
-<ng-template #viewTemplate>
-  <div class="card">
-    <p><strong>Name:</strong> {{ task.Name }}</p>
-    <p><strong>Description:</strong> {{ task.Description }}</p>
-    <p><strong>Create Date:</strong> {{ task.CreateDate | date: 'yyyy-MM-dd' }}</p>
-    <p><strong>Modify Date:</strong> {{ task.ModifyDate | date: 'yyyy-MM-dd' }}</p>    
-    <p><strong>Due Date:</strong> {{ task.DueDate | date: 'yyyy-MM-dd' }}</p>    
-    <p><strong>Assignee:</strong> {{ assignee }}</p>
-    <p><strong>Task Owner:</strong> {{ owner}}</p> 
-  </div>
-<div>
-    <button type="button" class="edit-btn" (click)="toggleEditMode(task, $event)">Edit</button>
-    <button type="button" class="delete-btn" (click)="deleteTask(task)">Delete</button>
+<div class="task-container">
+    <div class="task-field">
+        <label for="name">Task Name:</label>
+        <div id="name" class="task-data">
+            {{this.task.Name}}
+        </div>
+    </div>
+    <div class="task-field">
+        <label for="description">Description:</label>
+        <div id="description" class="task-data">
+            {{this.task.Description}}
+        </div>
+    </div>
+       <div class="task-field">
+        <label for="status">Status:</label>
+        <div id="status" class="task-data">
+            {{ getStatusName(task.Status) }}
+        </div>
+    </div>
+    <div class="task-field">
+        <label for="level">Level:</label>
+        <div id="level" class="task-data">
+            {{this.task.Level}}
+        </div>
+    </div>
+    <div class="task-field">
+        <label for="createdate">Create Date:</label>
+        <div id="createdate" class="task-data">
+            {{this.task.CreateDate | date: 'yyyy-MM-dd'}}
+        </div>
+    </div>
+    <div class="task-field">
+        <label for="modifydate">Modify Date:</label>
+        <div id="modifydate" class="task-data">
+            {{this.task.ModifyDate |date: 'yyyy-MM-dd'}}
+        </div>
+    </div>
+    <div class="task-field">
+        <label for="duedate">Due Date:</label>
+        <div id="duedate" class="task-data">
+            {{this.task.DueDate |date: 'yyyy-MM-dd'}}
+        </div>
+    </div>
+    <div class="task-field">
+        <label for="finishdate">Finish Date:</label>
+        <div id="finishdate" class="task-data">
+            {{this.task.FinishDate}}
+        </div>
+    </div>
 </div>
-</ng-template>

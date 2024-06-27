@@ -50,22 +50,14 @@
 
 </style>
 
-
-
-<div class="pill-group">
-  @for (item of [
-  {title:'+ Add task'},
-  { title: 'Total Completed Tasks:(' + (completedTasksCount$ | async) + ')' },
-    { title: 'Total Pending Tasks:(' + (inProgressTasksCount$ | async) + ')' },
-    { title: 'Total Overdue Tasks:(' + (overdueTasksCount$ | async) + ')' },
-    {title:'Employee Reports'}    
-  ]; track item.title) {
-    <a
-      class="pill"
-      (click)="handleClick(item, $event)"
-    >
+<div class="pill-group paddings-small">
+  <ng-container *ngFor="let item of menuItems; trackBy: trackByTitle">
+    <a *ngIf="item.title !== '+ Add task' || (item.title === '+ Add task' && showAddTask)"
+    class="pill"
+    (click)="handleClick(item, $event)"
+  >
       <span>{{ item.title }}</span>
-      <!-- <svg
+      <svg
         xmlns="http://www.w3.org/2000/svg"
         height="14"
         viewBox="0 -960 960 960"
@@ -75,102 +67,183 @@
         <path
           d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h560v-280h80v280q0 33-23.5 56.5T760-120H200Zm188-212-56-56 372-372H560v-80h280v280h-80v-144L388-332Z"
         />
-      </svg> -->
+      </svg>
     </a>
-  }
+  </ng-container>
 </div>
 
-<div class="no-data">
-  <p *ngIf="tasks.length<1 && !isLoading">No tasks available</p>
-</div>
-<p-table [value]="tasks" 
 
-[scrollable]="true"
-[loading]="isLoading"
+<p-table *ngIf="showTasks"
+  #dt2
+  [value]="tasks"
+  dataKey="id"
+  [rows]="10"
+  [rowsPerPageOptions]="[10, 25, 50]"
+  [loading]="isLoading"
+  [paginator]="true"
+  [globalFilterFields]="['Name', 'Description', 'UserFullName', 'Status', 'Level', 'DueDate']"
+  [tableStyle]="{ 'min-width': '75rem' }"
 >
-    <ng-template pTemplate="header">
-      <tr>
-        <th pSortableColumn="Name">TASK <p-sortIcon field="Name" /></th>
-        <th>DESCRIPTION</th>
-        <th pSortableColumn="UserId">ASSIGNEE <p-sortIcon field="Name" /></th>
-        <th pSortableColumn="Status">STAGE <p-sortIcon field="Name" /></th>
-        <th pSortableColumn="DueDate">DUE DATE <p-sortIcon field="Name" /></th>  
-        <th pSortableColumn="Level">Level <p-sortIcon field="Name" /></th>    
-        <th><span class="pi pi-wave-pulse"></span> </th>   
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-task>
-      <tr [ngClass]="{'overdue': getStatusName(task.Status) === 'Overdue'}">
-        <td>{{task.Name}}</td>
-        <td>{{task.Description}}</td>
-        <td>{{ task.AssigneeId }}</td>
-        <td >{{getStatusName(task.Status)}}</td>
-        <td >{{task.DueDate | date: 'yyyy-MM-dd'}} </td>  
-        <td>{{task.Level}} </td>     
-        <td>
-          <button (click)="openTaskDetails(task)">View Details</button>
-        </td>         
-      </tr>
-    </ng-template>
-    <p *ngIf="tasks.length<1&&!isLoading">No tasks available</p>
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Task</th>
+      <th>Description</th>
+      <th>Assignee</th>
+      <th>Stage</th>
+      <th>Priority</th>
+      <th>Due date</th>
+      <th></th>
+    </tr>
+    <tr>
+      <th>
+        <p-columnFilter
+          type="text"
+          field="Name"
+          placeholder="Search by task"
+          ariaLabel="Filter Task"
+        />
+      </th>
+      <th>
+        <p-columnFilter
+          type="text"
+          field="Description"
+          placeholder="Search by description"
+          ariaLabel="Filter Description"
+        />
+      </th>
+      <th>
+        <p-columnFilter
+          type="text"
+          field='UserFullName'
+          placeholder="Search by username"
+          ariaLabel="Filter Username"
+        />
+      </th>
+      <th>
+        <p-columnFilter
+          type="text"
+          field="Status"
+          placeholder="Search by stage"
+          ariaLabel="Filter Stage"
+        />
+      </th>
+      <th>
+        <p-columnFilter
+          type="text"
+          field="Level"
+          placeholder="Search by level"
+          ariaLabel="Filter Level"
+        />
+      </th>
+      <th>
+        <p-columnFilter
+          type="text"
+          field="DueDate"
+          placeholder="Search by due date"
+          ariaLabel="Filter Due Date"
+        />
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-task>
+    <tr>
+      <td>{{ task.Name }}</td>
+      <td>{{ task.Description }}</td>
+      <td>{{ task.User?.Fname }}</td>
+      <td>{{ getStatusName(task.Status) }}</td>
+      <td>
+        <p-tag
+          [value]="getLevelName(task.Level)"
+          [severity]="getSeverity(task.Level)"
+        ></p-tag>
+      </td>
+      <td>{{ task.DueDate | date: 'yyyy-MM-dd' }}</td>
+      <td>
+        <button 
+            type="button" 
+            pButton 
+            pRipple 
+            icon="pi pi-pen-to-square" 
+            (click)="openTaskDialog(task)"
+            [disabled]=" getStatusName(task.Status) === 'InProgress'">
+        </button>
+    </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="6">No tasks found.</td>
+    </tr>
+  </ng-template>
+</p-table>
 
-   
-    <P *ngIf="isLoading">Loading...</P>
-  </p-table>
 
-  <div class="user-list">
-    <h2>View Employee Reports</h2>
-    <div class="input-group">
-      <select (change)="onUserChange($event)" >
-        <option value="">Choose employee</option>
-        <option *ngFor="let user of users" [value]="user.UserId">{{user.Username}} </option>
-      </select>
-    </div>
-    <!-- <ul>
-      <li *ngFor="let user of users" (click)="selectUser(user)">
-        {{ user.Username }}
-      </li>
-    </ul> -->
-  </div>
-  
-  <div class="task-reports" *ngIf="selectedUser">
-    <h2>Task Reports for {{ selectedUser.Username }}</h2>
-    <div class="pill-group">
-      <a class="pill" (click)="handleUserTaskReport($event, 'completed')">
-        Tasks Completed
-      </a>
-      <a class="pill" (click)="handleUserTaskReport($event, 'inProgress')">
-        Tasks InProgress
-      </a>
-      <a class="pill" (click)="handleUserTaskReport($event, 'overdue')">
-        Tasks Overdue
-      </a>
-    </div>
-  
-    <p-table [value]="tasks" [scrollable]="true" [loading]="isLoading" *ngIf="tasks.length>0">
-      <ng-template pTemplate="header">
-        <tr>
-          <th pSortableColumn="Name">TASK <p-sortIcon field="Name" /></th>
-          <th>DESCRIPTION</th>
-          <th pSortableColumn="UserId">ASSIGNEE <p-sortIcon field="UserId" /></th>
-          <th pSortableColumn="Status">STAGE <p-sortIcon field="Status"/></th>
-          <th pSortableColumn="DueDate">DUE DATE <p-sortIcon field="DueDate" /></th>
-          <th pSortableColumn="Level">Level <p-sortIcon field="Level" /></th>
-          <th><span class="pi pi-wave-pulse"></span></th>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-task>
-        <tr [ngClass]="{'overdue': getStatusName(task.Status) === 'Overdue'}">
-          <td>{{task.Name}}</td>
-          <td>{{task.Description}}</td>
-          <td>{{ task.AssigneeId }}</td>
-          <td>{{getStatusName(task.Status)}}</td>
-          <td>{{task.DueDate | date: 'yyyy-MM-dd'}}</td>
-          <td>{{task.Level}}</td>
-          <td>
-            <button (click)="openTaskDetails(task)">View Details</button>
-          </td>
-        </tr>
-      </ng-template>
-    </p-table>
-  </div>
+
+<p-table *ngIf="showReports"
+  #dt2
+  [value]="reports"
+  dataKey="id"
+  [rows]="10"
+  [rowsPerPageOptions]="[10, 25, 50]"
+  [loading]="isLoading"
+  [paginator]="true"
+  [globalFilterFields]="['Fname', 'Lname', 'Username']"
+  [tableStyle]="{ 'min-width': '75rem' }"
+>
+  <ng-template pTemplate="header">
+    <tr>
+      <th class="fit-content">Fname</th>
+      <th class="fit-content">Lname</th>
+      <th class="fit-content">Username</th>
+      <th class="fit-content">Completed</th>
+      <th class="fit-content">New</th>
+      <th class="fit-content">InProgress</th>
+      <th class="fit-content">Overdue</th>
+    </tr>
+    <tr>
+      <th>
+        <p-columnFilter
+          type="text"
+          field="FName"
+          placeholder="Search by fname"
+          ariaLabel="Filter name"
+        />
+      </th>
+      <th>
+        <p-columnFilter
+          type="text"
+          field="Lname"
+          placeholder="Search by lname"
+          ariaLabel="Filter by lname"
+        />
+      </th>
+      <th>
+        <p-columnFilter
+          type="text"
+          field='Username'
+          placeholder="Search by username"
+          ariaLabel="Filter Username"
+        />
+      </th> 
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-report>
+    <tr>
+      <td>{{report.Fname}} </td>
+      <td>{{report.Lname}}</td>
+      <td>{{report.Username}}</td>
+      <td>{{report.CompletedTasks}}</td>
+      <td>{{ report.NewTasks}}</td>
+      <td>{{report.InProgressTasks}}</td>
+      <td>{{report.OverdueTasks}}</td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="6">No users/reports found.</td>
+    </tr>
+  </ng-template>
+</p-table>
+
+
+

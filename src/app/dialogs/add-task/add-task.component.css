@@ -29,3 +29,6 @@ select option:checked{
 .input-group {
     font-size:var(--fs-small);
 }
+.hide{
+  display:none;
+}

@@ -36,14 +36,14 @@
 .card-info h3,
 .card-info h2 {
   margin: 10px 0;
-  color: #333;
-  font-size: 0.875rem;
+  color: var(--gray-800);
+  font-size: var(--fs-m);
 }
 
 .card-info span {
   font-weight: bold;
-  color: #555;
-  font-size: 0.875rem;
+  color:var(--gray-700);
+  font-size: var(--fs-m);
 }
 
 .card-btn a {

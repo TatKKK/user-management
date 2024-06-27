@@ -25,6 +25,9 @@ export class TasksService {
   private completedTasksCountSubject=new BehaviorSubject<number>(0);
   public completedTasks$=this.completedTasksCountSubject.asObservable();
 
+  private newTasksCountSubject=new BehaviorSubject<number>(0);
+  public newTasks$=this.newTasksCountSubject.asObservable();
+
   private inProgressTasksCountSubject=new BehaviorSubject<number>(0);
   public inProgressTasks$=this.inProgressTasksCountSubject.asObservable();
 
@@ -44,10 +47,15 @@ export class TasksService {
       private messageService:MessageService
     ) { }
   
-    getTasks(): void {     
-      this.http.get<Task[]>('http://localhost:5096/api/Tasks/getTasks').subscribe(tasks => {
+    getTasks(companyId:number): void {     
+      this.http.get<Task[]>(`http://localhost:5096/api/Tasks/getTasks/${companyId}`).subscribe(tasks => {
         this.tasksSubject.next(tasks);
       });
+    }
+
+    getTask(taskId:number): Observable<Task> {     
+     return this.http.get<Task>(`http://localhost:5096/api/Tasks/getTask/${taskId}`);
+        
     }
     getTasksByAssignee(assigneeId:number): void {     
       this.http.get<Task[]>(`http://localhost:5096/api/Tasks/tasksByAssignee/${assigneeId}`).subscribe(tasks => {
@@ -79,31 +87,39 @@ export class TasksService {
         })
       );
     }
-  
     updateTaskStatus(taskId: number, status: number): Observable<any> {
       const dto = { TaskId: taskId, Status: status };
       return this.http.put(`http://localhost:5096/api/Tasks/completeTask/${taskId}`, dto);
     }
-  
-    updateTask(taskId: number, editTaskDto: EditTaskDto): Observable<any> {
-      return this.http.put(`http://localhost:5096/api/Tasks/editTask/${taskId}`, editTaskDto);
+    startTask(taskId: number, status: number): Observable<any> {
+      const dto = { TaskId: taskId, Status: status };
+      return this.http.put(`http://localhost:5096/api/Tasks/startTask/${taskId}`, dto);
     }
-  
-    tasksCompleted(): void {     
-      this.http.get<Task[]>('http://localhost:5096/api/Tasks/tasksCompleted').subscribe(tasks => {
-        this.tasksSubject.next(tasks);
-        this.completedTasksCountSubject.next(tasks.length);
-      });
-    }
+    
+    editTask(taskId:number, task:Task): Observable<any> {
+     
+      return this.http.put(`http://localhost:5096/api/Tasks/editTask/${taskId}`, task).pipe(
+        tap((updatedTask:Task)=>{
+          const updatedTasks=this.tasksSubject.value.map(t => t.Id=== taskId ? updatedTask : t);
 
-    tasksInProgress(): void {     
-      this.http.get<Task[]>('http://localhost:5096/api/Tasks/tasksInProgress').subscribe(tasks => {
+          this.tasksSubject.next(updatedTasks);
+        }),
+        catchError(error => {
+          console.error('Error adding user:', error);
+          return throwError(() => new Error('Error adding user'));
+      })
+      )
+     
+    }
+   
+    tasksInProgress(companyId:number): void {     
+      this.http.get<Task[]>(`http://localhost:5096/api/Tasks/tasksInProgress/${companyId}`).subscribe(tasks => {
         this.tasksSubject.next(tasks);
         this.inProgressTasksCountSubject.next(tasks.length);
       });
     }
-    tasksOverdue(): void {     
-      this.http.get<Task[]>('http://localhost:5096/api/Tasks/tasksOverdue').subscribe(tasks => {
+    tasksOverdue(companyId:number): void {     
+      this.http.get<Task[]>(`http://localhost:5096/api/Tasks/tasksOverdue/${companyId}`).subscribe(tasks => {
         this.tasksSubject.next(tasks);
         this.overdueTasksCountSubject.next(tasks.length);
       });

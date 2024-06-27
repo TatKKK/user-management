@@ -3,8 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Company } from '../models/company.model';
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
-import { PaginatedCompanyResult } from '../models/companyAndUser.model';
-
+import { CompanyValidator } from '../models/companyAndUser.model';
 import { Registration } from '../models/companyAndUser.model';
 
 
@@ -19,7 +18,7 @@ export class CompaniesService {
   ) { }
 
  
-  addCompany(registration:Registration):Observable<Registration>{    
+  addCompany(registration:CompanyValidator):Observable<Registration>{    
     
     return this.http.post<any>(`http://localhost:5096/api/Companies/addCompanyAndUser`, registration)
   }
@@ -37,21 +36,6 @@ deleteCompany(Id:number): Observable<void> {
   return this.http.delete<void>(`http://localhost:5096/api/Companies/deleteCompany/${Id}`);
 }
 
-getCompaniesPaginated(pageNumber:number= 1, pageSize:number= 6): Observable<{ companies: Registration[], totalCount: number }> {
-  return this.http.get<{ companies: Registration[], totalCount: number }>(`http://localhost:5096/api/Companies/companiesPaginate`, {
-    params: {
-      pageNumber: pageNumber.toString(),
-      pageSize: pageSize.toString()
-    }
-  });
-}
 
-private _paginatedCompaniesResult!: PaginatedCompanyResult
-get PaginatedCompaniesResult (): PaginatedCompanyResult {
-  return this._paginatedCompaniesResult
-}
-set PaginatedCompaniesResult (value: PaginatedCompanyResult) {
-  this._paginatedCompaniesResult = value
-}
 
 }

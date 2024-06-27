@@ -13,20 +13,27 @@ export class Task{
     public FinishDate?:Date;
     public Level?:TaskLevel;
     public Status?:TaskStatus;     
+
+    // get UserFullName(): string {
+    //     return this.User ? `${this.User.Fname} ${this.User.Lname}` : '';
+    //   }
 }
 
 export enum TaskLevel{
-    Easy = 'Easy',
-    Medium = 'Medium',
-    Advanced = 'Advanced'
+    // Easy = 'Easy',
+    // Medium = 'Medium',
+    // Advanced = 'Advanced'
+    Low=0,
+    Medium=1,
+    High=2
 }
 
 export enum TaskStatus{
-    New,
-    InProgress,
-    Completed,
-    Overdue,
-    Cancelled
+    New = 0,
+    InProgress = 1,
+    Completed = 2,
+    Overdue = 3,
+    Cancelled = 4
 }
 
 export class EditTaskDto {

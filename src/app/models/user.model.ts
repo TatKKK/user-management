@@ -20,19 +20,16 @@ export class Role{
 }
 
 export class UserDto{
-
-    public UserId?:number;
-   
-    public Username?:string;
-   
-
+    public UserId?:number;   
+    public Username?:string;  
+    public Password?:string;
     public RoleId?:number;
     public IsActive?:boolean;
     public Fname?:string;
     public Lname?:string;
     public Phone?:string;
     public Email?:string;
-    
+    public Role?: { Id?: number, Name?: string }
 }
 
 export class UserReport {

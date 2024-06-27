@@ -1,54 +1,154 @@
-<button class="button" (click)="openAddUserDialog()">
-  <a><span class="pi pi-user-plus"></span> Add User</a>
-</button>
-<p-toast></p-toast>
-<form [formGroup]="editUser">
-  <table>
-    <thead>
-      <tr>
-        <th>First Name</th>
-        <th>Last Name</th>
-        <th>Phone</th>
-        <th>Email</th>
-        <th>Username</th>
-        <th>User Role</th>
-        <th>User Status</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let user of users; let i = index" [ngClass]="{'grey-row': user.IsActive === false}" (click)="user.UserId ? selectUser(user.UserId, $event) : null">
-        <ng-container *ngIf="selectedUser === user && isEditMode; else viewTemplate">
-          <td><input formControlName="Fname" (click)="$event.stopPropagation()" /></td>
-          <td><input formControlName="Lname" (click)="$event.stopPropagation()" /></td>
-          <td><input formControlName="Phone" (click)="$event.stopPropagation()" /></td>
-          <td><input formControlName="Email" (click)="$event.stopPropagation()" /></td>
-          <td><input formControlName="Username" (click)="$event.stopPropagation()" /></td>
-          <td><input formControlName="RoleId" (click)="$event.stopPropagation()" /></td>
-          <td><input type="checkbox" formControlName="IsActive" (click)="$event.stopPropagation()" /></td>
-          <td>
-            <button type="button" class="edit-btn" (click)="saveUserChanges($event)">Save</button>
-            <button type="button" class="delete-btn" (click)="toggleEditMode()">Cancel</button>
-          </td>
-        </ng-container>
-        <ng-template #viewTemplate>
-          <td>{{ user.Fname }}</td>
-          <td>{{ user.Lname }}</td>
-          <td>{{ user.Phone }}</td>   
-          <td>{{ user.Email }}</td>                 
-          <td>{{ user.Username }}</td>
-          <td>{{ user.Role?.Name }}</td>
-          <td>{{ user.IsActive ? 'Active' : 'Inactive' }}</td>
-          <td>
-            <button type="button" class="edit-btn" (click)="toggleEditMode(user, $event)">Edit</button>
-            <button type="button" class="delete-btn" (click)="deleteUser(user)">Delete</button>
-          </td>
-        </ng-template>
-      </tr>
-    </tbody>
-  </table>
-</form>
+<style>
+  .pill-group {
+    display: flex;
+    flex-direction: row;
+    align-items: start;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    padding:20px 0;
+  }
 
-<!-- <button class="button">
-  <a><span class="pi pi-user-plus"></span> All Tasks</a>
-</button> -->
+  .pill {
+    display: flex;
+    align-items: center;
+    --pill-accent: var(--bright-blue);
+    background: color-mix(in srgb, var(--pill-accent) 5%, transparent);
+    color: var(--pill-accent);
+    padding-inline: 0.75rem;
+    padding-block: 0.375rem;
+    border-radius: 2.75rem;
+    border: 0;
+    transition: background 0.3s ease;
+    font-family: var(--inter-font);
+    font-size: 0.875rem;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 1.4rem;
+    letter-spacing: -0.00875rem;
+    text-decoration: none;
+  }
+
+  .pill:hover {
+    background: color-mix(in srgb, var(--pill-accent) 15%, transparent);
+  }
+
+  .pill-group .pill:nth-child(6n + 1) {
+    --pill-accent: var(--vivid-pink);
+  }
+  .pill-group .pill:nth-child(6n + 3) {
+    --pill-accent: var(--bright-blue);
+  }
+  
+
+  .pill-group svg {
+    margin-inline-start: 0.25rem;
+  }
+
+</style>
+
+<p-toast></p-toast>
+
+<div class="paddings-small">
+  <button class="pill" (click)="openUserDialog()">
+    <a><span class="pi pi-user-plus"></span> Add User</a>
+  </button>
+  <div class="users-table">
+    <p-table
+      #dt1
+      [value]="users"
+      dataKey="id"
+      [rows]="5"
+      [rowsPerPageOptions]="[5, 15, 30]"
+      [loading]="loading"
+      [paginator]="true"
+      [globalFilterFields]="['Fname', 'Lname', 'Username', 'Email', 'Phone', 'Role.Name', 'IsActive']"      >
+      
+      <ng-template pTemplate="header">
+          <tr>
+              <th>
+                  <div>
+                      Fname
+                      <p-columnFilter type="text" field="Fname" display="menu" />
+                  </div>
+              </th>
+              <th>
+                  <div>
+                      Lname
+                      <p-columnFilter type="text" field="Lname" display="menu" />
+                  </div>
+              </th>
+              <th>
+                <div>
+                    Username
+                    <p-columnFilter type="text" field="Username" display="menu" />
+                </div>
+            </th>
+            <th>
+              <div>
+                  Email
+                  <p-columnFilter type="text" field="Email" display="menu" />
+              </div>
+          </th>
+          <th>
+            <div>
+                Phone
+                <p-columnFilter type="text" field="Phone" display="menu" />
+            </div>
+        </th>
+            <th>
+              <div>
+                  Role
+                  <p-columnFilter type="text" field="Role.Name" display="menu" />
+              </div>
+          </th>
+          <th>
+            <div>
+                Status
+                <p-columnFilter type="text" field="IsActive" display="menu" />
+            </div>
+        </th>
+          <th>
+            <div>
+                Actions
+            </div>
+        </th>
+           
+          </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-user>
+          <tr [ngClass]="{'disabled':user.IsActive=== false} ">
+              <td>
+                  {{ user.Fname }}
+              </td>    
+              <td>                 
+                <span>{{ user.Lname }}</span>
+            </td>
+            <td>                 
+              <span>{{ user.Username }}</span>
+            </td>
+            <td>                 
+              <span>{{ user.Email}}</span>
+            </td>
+            <td>                 
+              <span>{{ user.Phone}}</span>
+            </td>
+            <td>                 
+              <span>{{ user.Role?.Name}}</span>
+            </td>
+            <td >                 
+              <span>{{ user.IsActive?'Active':'InActive'}}</span>
+            </td>
+            <td class="pill-group">
+              <button class="pill" (click)="openUserDialog(user)"> Edit</button>
+              <button class="pill" (click)="deleteUser(user)"> Delete</button>
+            </td>
+          </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+          <tr>
+              <td>No users found.</td>
+          </tr>
+      </ng-template>
+  </p-table>
+  </div>
+</div>

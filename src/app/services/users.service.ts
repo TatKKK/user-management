@@ -6,12 +6,22 @@ import { MessageService } from 'primeng/api';
 import { BehaviorSubject } from 'rxjs';
 import { UserDto } from '../models/user.model';
 import { UserReport } from '../models/user.model';
+import { Role } from '../models/user.model';
+
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class UsersService {
+
+  roles: Role[] = [
+    { Id: 1, Name: 'Admin' },
+    { Id: 2, Name: 'Developer' },
+    { Id: 3, Name: 'Manager' },
+    { Id: 4, Name: 'Operator' }
+  ];
+
 public users:User[]=[];
 
 private isLoggedInSubject=new BehaviorSubject<boolean>(this.hasToken());
@@ -19,6 +29,14 @@ public isLoggedInSubject$=this.isLoggedInSubject.asObservable();
 
 private usersSubject = new BehaviorSubject<User[]>([]);
 public users$ = this.usersSubject.asObservable();
+
+private assigneesSubject = new BehaviorSubject<User[]>([]);
+public assignees$ = this.assigneesSubject.asObservable();
+
+
+private rolesSubject = new BehaviorSubject<Role[]>([]);
+public roles$ = this.rolesSubject.asObservable();
+
 
 private hasToken (): boolean {
   return !!this.getToken()
@@ -35,11 +53,37 @@ public getToken(): string | null {
   getUsers(): void {   
     this.http.get<User[]>('http://localhost:5096/api/Users/getUsers').subscribe(users => {
       this.usersSubject.next(users);
+    
     });
   }
 
-  deleteUser(userId: number): Observable<any> {
-  
+  getRoleById(roleId: number | undefined): Role | undefined {
+    return this.roles.find(role => role.Id === roleId);
+  }
+
+  getAssignees(): void {   
+    this.http.get<User[]>('http://localhost:5096/api/Users/getAssignees').subscribe(users => {
+      this.assigneesSubject.next(users);
+    
+    });
+  }
+
+  // getAdmins(): void {   
+  //   this.http.get<User[]>('http://localhost:5096/api/Users/getAdmins').subscribe(users => {
+  //     this.usersSubject.next(users);
+  //   });
+  // }
+  // getOperators(): void {   
+  //   this.http.get<User[]>('http://localhost:5096/api/Users/getOperators').subscribe(users => {
+  //     this.usersSubject.next(users);
+  //   });
+  // }
+  // getManagers(): void {   
+  //   this.http.get<User[]>('http://localhost:5096/api/Users/getManagers').subscribe(users => {
+  //     this.usersSubject.next(users);
+  //   });
+  // }
+  deleteUser(userId: number): Observable<any> {  
     return this.http.delete(`http://localhost:5096/api/Users/deleteUser/${userId}`).pipe(
       tap(() => {
         const updatedUsers = this.usersSubject.value.filter(user => user.UserId !== userId);
@@ -50,11 +94,11 @@ public getToken(): string | null {
   
 
   addUser(user:User): Observable<User> {
+    user.Role = this.getRoleById(user.RoleId);
     console.log('Sending User data to server:', user);
-    
-
     return this.http.post<User>(`http://localhost:5096/api/Users/addUser`, user).pipe(
       tap((newUser) => {
+        newUser.Role = this.getRoleById(newUser.RoleId); 
         const updatedUsers = [...this.usersSubject.value, newUser];
         this.usersSubject.next(updatedUsers);
       }),
@@ -66,24 +110,24 @@ public getToken(): string | null {
 }
 
 
-editUser(id: number, userDto:UserDto): Observable<any> {     
-  console.log('Sending Edit User request to server:', userDto);
+editUser(id: number, user:User): Observable<User> {  
+  user.Role = this.getRoleById(user.RoleId);   
+  console.log('Sending Edit User request to server:', user);
 
-  return this.http.put(`http://localhost:5096/api/Users/editUser/${id}`, userDto).pipe(
-      tap(response => {
-          console.log('Edit User response from server:', response);
-      }),
+  return this.http.put(`http://localhost:5096/api/Users/editUser/${id}`, user).pipe(
+    tap((updatedUser:User) => {
+      // updatedUser.Role= this.getRoleById(updatedUser.RoleId); 
+      const updatedUsers = this.usersSubject.value.map(u => u.UserId === id ? updatedUser : u);
+    
+      this.usersSubject.next(updatedUsers);
+    }),
       catchError(error => {
-          console.error('Error editing user:', error);
-          return throwError(() => new Error('Error editing user'));
+          console.error('Error adding user:', error);
+          return throwError(() => new Error('Error adding user'));
       })
   );
 }
 
-
-// editUser(id: number, userData:any): Observable<any> {     
-//   return this.http.put(`http://localhost:5096/api/Users/editUser/${id}`, JSON.stringify(userData));
-// }
 
 getUser(id: number): Observable<User> {
 
