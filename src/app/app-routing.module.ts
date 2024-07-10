@@ -4,19 +4,17 @@ import { HomeComponent } from './pages/home/home.component';
 import { AddCompanyComponent } from './pages/add-company/add-company.component';
 import { ViewCompaniesComponent } from './pages/view-companies/view-companies.component';
 import { AdminPageComponent } from './pages/admin-page/admin-page.component';
-import { ManagerComponent } from './pages/manager/manager.component';
 import { LoginComponent } from './dialogs/login/login.component';
-import { AssigneePageComponent } from './pages/assignee-page/assignee-page.component';
 import { ReportsComponent } from './pages/reports/reports.component';
+import { UserpageComponent } from './pages/userpage/userpage.component';
 
 const routes: Routes = [
   {path:'', component:HomeComponent},
   {path:'addCompany', component:AddCompanyComponent},
   {path:'viewCompanies', component:ViewCompaniesComponent},
   {path:'adminPage', component:AdminPageComponent},
-  {path:'managerPage', component:ManagerComponent},
+  {path:'userPage', component:UserpageComponent},
   {path:'login', component:LoginComponent},
-  {path:'operatorPage', component:AssigneePageComponent},
   {path:'reports', component:ReportsComponent}
   
 ];

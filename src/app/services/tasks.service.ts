@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Task, TaskStatus } from '../models/task.model';
 import { BehaviorSubject } from 'rxjs';
 import { AuthService } from './auth.service';
+import { UsersService } from './users.service';
 import { MessageService } from 'primeng/api';
 import { User } from '../models/user.model';
 import { Observable, tap , catchError, throwError, of} from 'rxjs';
@@ -15,6 +16,8 @@ import { UserDto } from '../models/user.model';
 })
 export class TasksService {
   public tasks:Task[]=[];
+
+  user!:User;
 
   private isLoggedInSubject=new BehaviorSubject<boolean>(this.hasToken());
   public isLoggedIn$=this.isLoggedInSubject.asObservable();
@@ -41,10 +44,10 @@ export class TasksService {
     return localStorage.getItem('token');
   }
   
-  
-    constructor(
+      constructor(
       private http:HttpClient,
-      private messageService:MessageService
+      private messageService:MessageService,
+      private userService:UsersService
     ) { }
   
     getTasks(companyId:number): void {     
@@ -68,25 +71,30 @@ export class TasksService {
       });
     }
     
-    deleteTask(taskId: number): Observable<any> {      
+    deleteTask(taskId:number): Observable<any> {      
       return this.http.delete(`http://localhost:5096/api/Tasks/deleteTask/${taskId}`).pipe(
         tap(() => {
           const updatedTasks = this.tasksSubject.value.filter(task => task.Id !== taskId);
           this.tasksSubject.next(updatedTasks);
         })
       );
-    }
-    
+    }    
   
-    addTask(task:Task): Observable<Task> {
+    addTask(task:Task): Observable<Task> {      
       console.log('Sending task data to server:', task);    
       return this.http.post<Task>(`http://localhost:5096/api/Tasks/addTask`, task).pipe(
         tap((newTask) => {
           const updatedTasks = [...this.tasksSubject.value, newTask];
-          this.tasksSubject.next(updatedTasks);
-        })
+        this.tasksSubject.next(updatedTasks);
+        }),
+          catchError(error => {
+              console.error('Error adding user:', error);
+              return throwError(() => new Error('Error adding user'));
+          })       
       );
     }
+
+    
     updateTaskStatus(taskId: number, status: number): Observable<any> {
       const dto = { TaskId: taskId, Status: status };
       return this.http.put(`http://localhost:5096/api/Tasks/completeTask/${taskId}`, dto);
@@ -150,31 +158,25 @@ export class TasksService {
       return this.tasks.filter(task => task.AssigneeId === assigneeId).length;
     }
   
-    getCompletedTasksByUser(assigneeId: number): number {
-      return this.tasks.filter(task => task.AssigneeId === assigneeId && task.Status === TaskStatus.Completed).length;
-    }
+    // getCompletedTasksByUser(assigneeId: number): number {
+    //   return this.tasks.filter(task => task.AssigneeId === assigneeId && task.Status === TaskStatus.Completed).length;
+    // }
   
-    getInProgressTasksByUser(assigneeId: number): number {
-      return this.tasks.filter(task => task.AssigneeId === assigneeId && task.Status === TaskStatus.InProgress).length;
-    }
+    // getInProgressTasksByUser(assigneeId: number): number {
+    //   return this.tasks.filter(task => task.AssigneeId === assigneeId && task.Status === TaskStatus.InProgress).length;
+    // }
   
-    getOverdueTasksByUser(assigneeId: number): number {
-      return this.tasks.filter(task => task.AssigneeId === assigneeId && task.Status === TaskStatus.Overdue).length;
-    }
+    // getOverdueTasksByUser(assigneeId: number): number {
+    //   return this.tasks.filter(task => task.AssigneeId === assigneeId && task.Status === TaskStatus.Overdue).length;
+    // }
     
-    getTotal(): number {
-      return this.tasks.length;
-    }
-  
-    getCompleted(): number {
-      return this.tasks.filter(tasks => tasks.Status == TaskStatus.Completed).length;
-    }
-  
-    // getPending(): number {
-    //   return this.tasks.filter(tasks => tasks.Status == TaskStatus.New).length;
+    // getTotal(): number {
+    //   return this.tasks.length;
     // }
-
-    // getOverdue():number{
-    //   return this.tasks.filter(tasks=>tasks.Status==TaskStatus.Overdue).length;
+  
+    // getCompleted(): number {
+    //   return this.tasks.filter(tasks => tasks.Status == TaskStatus.Completed).length;
     // }
+  
+    
 }

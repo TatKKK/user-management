@@ -1,0 +1,8 @@
+.tabView-index{
+    display:flex;
+    gap:7px;
+    justify-content: end;
+}
+.add-btn{
+    margin-bottom:30px;
+}

@@ -1,3 +1,5 @@
+<p-toast></p-toast>
+
 <div class="task-container">
     <div class="task-field">
         <label for="name">Task Name:</label>
@@ -20,7 +22,7 @@
     <div class="task-field">
         <label for="level">Level:</label>
         <div id="level" class="task-data">
-            {{this.task.Level}}
+            {{getLevelName(task.Level)}}
         </div>
     </div>
     <div class="task-field">
@@ -29,22 +31,42 @@
             {{this.task.CreateDate | date: 'yyyy-MM-dd'}}
         </div>
     </div>
-    <div class="task-field">
+    <!-- <div class="task-field">
         <label for="modifydate">Modify Date:</label>
         <div id="modifydate" class="task-data">
             {{this.task.ModifyDate |date: 'yyyy-MM-dd'}}
         </div>
-    </div>
+    </div> -->
     <div class="task-field">
         <label for="duedate">Due Date:</label>
         <div id="duedate" class="task-data">
             {{this.task.DueDate |date: 'yyyy-MM-dd'}}
         </div>
     </div>
+   
+
     <div class="task-field">
-        <label for="finishdate">Finish Date:</label>
-        <div id="finishdate" class="task-data">
-            {{this.task.FinishDate}}
-        </div>
+        <label for="Status"> Start Task:</label>
+        <input type="checkbox" [checked]="task.Status === 2" 
+               [disabled]="task.Status === 2 || task.Status === 3 || task.Status" 
+               (change)="startTask(task)">
     </div>
+    
+    <div class="action-buttons">
+        <button 
+        type="button" 
+        pButton 
+        pRipple 
+        icon="pi pi-pen-to-square" 
+        (click)="openTaskDialog(task)"
+        [disabled]=" task.Status === 1">
+    </button>
+
+    <button type="button"
+    pButton 
+    pRipple 
+     (click)="deleteTask(task)" [disabled]="task.Status === 1" class="delete-btn"
+    icon="pi pi-trash"></button>
+    </div>
+
 </div>

@@ -1,34 +1,37 @@
 
 .task-container {  
     margin: 0 auto;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    padding:0 30px;
     border-radius: 8px;
 }
 
 .task-field {
-    margin-bottom: 10px;
+   display:grid;
+   grid-template-columns: .8fr 2fr;
+   margin-bottom:30px;
 }
 
 .task-field label {
     font-weight: bold;
     color:var(--bright-blue);
     display: block;
-    margin-bottom: 5px;
+    
 }
 
 .task-data {
-    background-color: var(--vivid-pink);
+   
     padding: 8px 12px;
     border-radius: 4px;
 }
-.task-field label:empty{
-    color:var(--vivid-pink);
-}
-.task-data:empty{
-    background-color: var(--vivid-pink);
-}
+
+
 .task-data:not(:empty) {
-    background-color: var(--gray-300);
+    box-shadow: 2px 2px 2px 1px rgba(37, 92, 202, 0.2);
     padding: 8px 12px;
     border-radius: 4px;
+}
+
+.action-buttons{
+    display:flex;
+    gap:10px;
 }

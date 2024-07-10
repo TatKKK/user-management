@@ -18,8 +18,7 @@ export class UsersService {
   roles: Role[] = [
     { Id: 1, Name: 'Admin' },
     { Id: 2, Name: 'Developer' },
-    { Id: 3, Name: 'Manager' },
-    { Id: 4, Name: 'Operator' }
+    { Id: 3, Name: 'Manager' }
   ];
 
 public users:User[]=[];
@@ -68,21 +67,6 @@ public getToken(): string | null {
     });
   }
 
-  // getAdmins(): void {   
-  //   this.http.get<User[]>('http://localhost:5096/api/Users/getAdmins').subscribe(users => {
-  //     this.usersSubject.next(users);
-  //   });
-  // }
-  // getOperators(): void {   
-  //   this.http.get<User[]>('http://localhost:5096/api/Users/getOperators').subscribe(users => {
-  //     this.usersSubject.next(users);
-  //   });
-  // }
-  // getManagers(): void {   
-  //   this.http.get<User[]>('http://localhost:5096/api/Users/getManagers').subscribe(users => {
-  //     this.usersSubject.next(users);
-  //   });
-  // }
   deleteUser(userId: number): Observable<any> {  
     return this.http.delete(`http://localhost:5096/api/Users/deleteUser/${userId}`).pipe(
       tap(() => {

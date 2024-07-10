@@ -1,28 +1,19 @@
-<div *ngIf="isLoggedIn$|async" class="user-greeting paddings-small border-bottom"> 
-    <ng-container *ngIf="userRole$| async as userRole">
+<!-- <div *ngIf="isLoggedIn$|async" class="user-greeting border-bottom paddings-small">  -->
+  <div class="user-greeting border-bottom paddings-small"> 
+    <ng-container *ngIf="userRole$| async as userRole">    
+      <div class="page-title">
+        <h2> Hello, {{username}}</h2>
+      </div>
       <div class="greeting-txt">       
         <span (click)="routeBasedOnUserRole()">           
-            {{ userRole }}
+           {{ userRole }}
         </span>
-      </div>
-    <button class="logout">        
-        <a routerLink="/" (click)="logout()"> Logout <span class="pi pi-sign-out"></span>
-        </a>
-    </button>
+        <button class="logout">        
+          <a routerLink="/" (click)="logout()"> Logout <span class="pi pi-sign-out"></span>
+          </a>
+      </button>
+      </div>  
     </ng-container>
   </div>
 
-  <!-- <div *ngIf="isLoggedIn" class="user-greeting"> 
-    <ng-container *ngIf="userRole">
-      <div class="greeting-txt">       
-        <span >
-           
-            {{ userRole }} es behaviorSubjectidan
-          </span>
-      </div>
-    <button class="logout">        
-        <a routerLink="/" (click)="logout()"> Logout <span class="pi pi-sign-out"></span>
-           </a>
-    </button>
-    </ng-container>   
-  </div> -->
+  

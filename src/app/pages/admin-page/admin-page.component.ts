@@ -52,15 +52,15 @@ private parseUserIdFromLocalStorage(): number | null {
   openUserDialog(user?: User): void {
     this.user = user || new User();
     const ref = this.dialogService.open(AddUserComponent, {
-        // header: this.user.UserId 
-        //     ? '<i class="pi pi-user-edit" style="font-size: 1.6rem"></i>Edit User' 
-        //     : '<i class="pi pi-user-plus" style="font-size: 1.6rem"></i>Add User',
+        header: this.user.UserId 
+            ? 'Edit User' 
+            : 'Add New User',
         width: '40%',
         contentStyle: { "max-height": "100vh", "overflow": "auto" },
         styleClass: 'custom-addUser',
         draggable: true,
         resizable: true,
-        dismissableMask: true,
+        closable:true,
         modal: true,
         data: { user: this.user || null }
     });
@@ -82,16 +82,15 @@ applyFilterGlobal($event: any, stringVal: any) {
 logout(){
 }
 
-deleteUser(user: User): void {
+deleteUser(user: User, ): void {
   if(user.UserId === this.loggedInUserId){
     this.messageService.add({
       severity:'warn',
       summary:'Opertion Forbidden',
       detail:'You cant delete your own account'
     })
-  }
-  if(user.UserId){
-
+  } else{
+    if(user.UserId)
     this.usersService.deleteUser(user.UserId).subscribe({
       next: () => {
         this.messageService.add({
@@ -112,5 +111,6 @@ deleteUser(user: User): void {
       }
     });
   }
+  
 }
 }

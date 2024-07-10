@@ -1,4 +1,5 @@
 @import "primeicons/primeicons.css";
+
 :root {
   --bright-blue: oklch(51.01% 0.274 263.83);
   --electric-violet: oklch(53.18% 0.28 296.97);
@@ -31,18 +32,32 @@
     Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
     "Segoe UI Symbol";
   box-sizing: border-box;
+  margin:0;
+  padding:0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  --fs-xs:11px;
-  --fs-s:14px;
-  --fs-m:0.875rem;
-  --fs-l:20px;
+  --fs-xs:0.75rem;
+  --fs-s:0.875px;
+  --fs-m:1rem;
+  --fs-l:1.25rem;
   --fs-xl:3.125rem;
 
 }
 
+body{
+  margin:0;
+  padding:0;
+  height:100%;
+  font-size:14px;
+  font-weight:400;
+  line-height:21px;
+  font-family: "Inter Tight", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol";
+}
 
+/*|| Typography */
 
 h1 {
   font-size: var(--fs-xl);
@@ -51,14 +66,26 @@ h1 {
   line-height: 100%;
   letter-spacing: -0.125rem;
   margin: 0;
-  font-family: "Inter Tight", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-    "Segoe UI Symbol";
+}
+h2 {
+  font-size: var(--fs-m);
+  color: var(--gray-800);
+  font-weight: 500; 
+  margin: 0;
 }
 
 p {
   margin: 0;
   color: var(--gray-700);
+}
+
+
+
+/*|| General Styles */
+
+.container{
+  max-width:1280px;
+  margin:0 auto;
 }
 
 .pill {
@@ -84,43 +111,17 @@ p {
 .pill:hover {
   background: color-mix(in srgb, var(--pill-accent) 15%, transparent);
 }
+
+
+/*|| Forms */
 input:focus{
   border-color: var(--bright-blue)!important;
   outline:blue;
-
   box-shadow: 0 0 0 3px #c8f3fa, 0 1px 2px rgba(15, 17, 17, .15) inset!important;
 }
-/*|| General styles */
 
-.container{
-  max-width:1200px;
-  margin:0 auto;
-}
 
-/*|| Sign In DIalog */
-.custom-login .p-dialog-header{
-  justify-content: center;
-  color: var(--grey-600);
-}
-.custom-login .p-icon{
-  display:none;
-}
 
-/*|| Add user dialog */
-/* .custom-addUser ,
-.custom-addTask {
-  display: flex;
-    flex-direction: column;
-    gap: 15px;
-} */
-
-.custom-addUser header{
-  padding:0!important
-}
-
-.custom-addUser .p-dialog-header-icon{
-  display:none;
-}
 
 /* General */
 
@@ -133,41 +134,13 @@ color-mix(in srgb, var(--pill-accent) 5%, transparent);
 }
 
 
-.edit-btn {
-  background-color: var(--green-500);
-  color: white;
-  padding: 5px 10px;
-  margin-right: 4px;
-  border: none;
-  cursor: pointer;
-  transition: 0.3s ease-in;
-  border-radius: 4px;
-}
 
-.edit-btn:hover,
-.delete-btn:hover {
-  opacity:70%;
-}
-
-.delete-btn {
-  background-color: var(--red-500);
-  color: white;
-  padding: 5px 10px;
-  border: none;
-  cursor: pointer;
-  transition: 0.3s ease-in;
-  border-radius: 4px;
-}
 
 .no-data{
   padding:10px 0 30px;;
   
 }
 
-/* 
-.p-component-overlay{
-  background:none;
-} */
 
 [disabled]{
   opacity:30%;
@@ -187,5 +160,118 @@ color-mix(in srgb, var(--pill-accent) 5%, transparent);
 }
 
 
-/*| primeng table */
+.hide{
+  display:none;
+  }
 
+/*| Customs PrimeNg */
+
+.custom-login .p-dialog-header{
+  color: var(--grey-600);
+}
+
+.custom-addUser header,
+.custom-addTask header {
+  padding:0!important
+}
+
+
+
+
+/*| Form */
+
+.form-container{
+  position: relative;
+  margin: 15px 0;
+  border: none;
+  background-color: #fff;
+  /* box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1); */
+  max-width:700px;
+  margin:0 auto;
+}
+
+label {
+display: block;
+white-space: normal;
+font-size: var(--fs-small);
+line-height: 1.25;
+margin-bottom:7px;
+}
+
+input{
+width: 100%;
+padding: 6px 8px;
+background: #fff;
+border: 1px solid #a1a1a1;
+border-radius: 2px;
+box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.1), 0 0 5px 2px rgba(212, 212, 212, 0);
+font-size: var(--fs-small);
+line-height: 16px;
+}
+
+.form-title{
+display:flex;
+justify-content: space-between;
+align-items:center;
+}
+
+
+.form-title i{
+  margin-left:7px;
+}
+.submit-btn{
+padding: 10px 15px;
+  font-size: 18px;
+  border-radius:4px;
+  width:100%;
+  border:none;
+  color: #fff;
+  background: var(--bright-blue);
+  margin-top:20px;
+}
+
+
+.submit-btn:hover{
+opacity: 90%;
+}
+
+.error{
+border:1px solid var(--hot-red);
+}
+.alert{
+color:var(--hot-red);
+font-size:var(--fs-xs);
+}
+
+.input-group{
+display:flex;
+align-items:start;
+gap:10px;
+}
+.input-group span{
+color:var(--gray-500);
+
+}
+
+span.superscript {
+vertical-align: super;
+}
+
+
+
+
+
+/*| tabview*/
+.p-tabview .p-tabview-panels { 
+  padding: 2.25rem 0;
+  
+}
+
+.delete-btn{
+  background-color: var(--hot-red);
+  border:none;
+}
+
+.p-datatable .p-datatable-thead > tr > th{
+  border:none;
+}

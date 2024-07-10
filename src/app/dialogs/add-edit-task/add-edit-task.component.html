@@ -1,0 +1,96 @@
+<div class="form-container">
+  <p-toast></p-toast>
+  <div class="overlay-grey">
+    <h2> Company Id :{{companyId}} </h2>
+    <form [formGroup]="taskForm" (ngSubmit)="onSubmit()" class="form-group">
+        <label for="Name">
+          Task Name: <span *ngIf="!isEditMode" [ngClass]="{
+            hide:
+              !taskForm.controls['Name'].errors &&
+              taskForm.controls['Name'].dirty &&
+              taskForm.controls['Name'].touched
+          }" class="pi pi-asterisk superscript" style="color: var(--gray-500); font-size: var(--fs-xs)">
+          </span>
+          <div class="input-group">
+            <input type="text" formControlName="Name" [ngClass]="{
+              error:
+                taskForm.controls['Name'].errors &&
+                taskForm.controls['Name'].dirty
+            }" />
+          </div>
+          <div>
+            <span *ngIf="taskForm.controls['Name']?.errors?.['minlength'] && taskForm.controls['Name'].dirty
+            &&taskForm.controls['Name'].touched" class="alert">
+              Task name must be at least 4 characters
+            </span>
+          </div>
+        </label>
+
+        <label for="Description">
+          Describe Task <span *ngIf="!isEditMode" [ngClass]="{
+            hide:
+              !taskForm.controls['Description'].errors &&
+              taskForm.controls['Description'].dirty &&
+              taskForm.controls['Description'].touched
+          }" class="pi pi-asterisk superscript" style="color: var(--gray-500); font-size: var(--fs-xs)">
+          </span>
+          <div class="input-group">
+            <input type="text" formControlName="Description" [ngClass]="{
+              error:
+                taskForm.controls['Description'].errors &&
+                taskForm.controls['Description'].dirty
+            }" />
+          </div>
+          <div>
+            <span *ngIf="taskForm.controls['Description']?.errors?.['minlength'] && 
+            taskForm.controls['Description'].dirty&&
+          taskForm.controls['Description'].touched" class="alert">
+              Last name must be at least 4 characters
+            </span>
+          </div>
+          <div>
+            <span *ngIf="taskForm.controls['Description']?.errors?.['pattern'] && taskForm.controls['Description'].dirty
+            &&taskForm.controls['Description'].touched" class="alert">
+              Invalid pattern
+            </span>
+          </div>
+        </label>
+
+        <div class="input-group">
+          <input type="text" onfocus="type='date'" formControlName="DueDate"
+          placeholder="Choose due date"
+          [ngClass]="{
+            error:
+              taskForm.controls['DueDate'].errors?.['invalidDate'] &&
+              taskForm.controls['DueDate'].dirty &&
+              taskForm.controls['DueDate'].touched
+          }" />
+        </div>
+        <span *ngIf="taskForm.controls['DueDate'].errors?.['invalidDate']" class="alert">
+          Due date must be today or in the future.
+        </span>
+       <label for="taskLevel"> Choose priority Level
+        <div class="input-group">
+          <select formControlName="TaskLevel">
+            <option value="">Choose task level</option>
+  <option [value]="0">Low</option>
+  <option [value]="1">Medium</option>
+  <option [value]="2">High</option>
+          </select>
+        </div>
+       </label>
+       <label for="userId" *ngIf="!this.task"> Assign task to:
+        <div class="input-group" >
+          <select formControlName="UserId">
+            <option value="">Choose employee</option>
+            <option *ngFor="let user of users" [value]="user.UserId">{{ user.Username }}</option>
+          </select>
+        </div>
+       </label>
+      <button type="submit" class="submit-btn" [disabled]="!taskForm.valid">
+        Save changes
+      </button>
+    </form>
+  </div>
+</div>
+

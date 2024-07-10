@@ -22,23 +22,20 @@ import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/dynamicdialog';
 
 @Component({
   selector: 'app-add-task',
-  templateUrl: './add-task.component.html',
-  styleUrls: ['./add-task.component.css', './../../pages/add-company/add-company.component.css']
+  templateUrl: './add-edit-task.component.html',
+  styleUrls: ['./add-edit-task.component.css', './../../pages/add-company/add-company.component.css']
 })
-export class AddTaskComponent implements OnInit {
-
+export class AddEditTaskComponent implements OnInit {
   isEditMode:Boolean=false;
-
   users:User[]=[];
   tasks:Task[]=[];
   task!:Task;
 
   companyId:number | null = null;
-
   
   taskForm!:FormGroup;
   ownerId!:number | null;
-  // taskLevels = Object.keys(TaskLevel).filter(key => isNaN(Number(key)));
+
   TaskLevel!:TaskLevel;
   userId!:number;
  
@@ -52,6 +49,7 @@ export class AddTaskComponent implements OnInit {
     // if (this.task && this.task.Status === TaskStatus.InProgress) {
     //   this.taskForm.disable();
     // }
+    this.companyId=this.authService.getCompanyId();   
     this.task = this.config.data.task;
     this.isEditMode = this.task&&this.task.Id !== undefined;
 
@@ -88,29 +86,23 @@ export class AddTaskComponent implements OnInit {
     this.isEditMode = this.task && this.task.Id !== undefined;
   
     this.taskForm = this.fb.group({
-      Name: ['', [Validators.required, Validators.minLength(4), Validators.pattern(/^([a-zA-Z\s]+|[\u10D0-\u10F0\s]+)$/)]],
-      Description: ['', [Validators.required, Validators.minLength(4), Validators.pattern(/^([a-zA-Z\s]+|[\u10D0-\u10F0\s]+)$/)]],
+      Name: ['', [Validators.required, Validators.minLength(4)]],
+      Description: ['', [Validators.required, Validators.minLength(4)]],
       DueDate: ['', [Validators.required, this.dateValidator()]],
       TaskLevel: ['', Validators.required],
       UserId: [{value: '', disabled: this.isEditMode}, this.isEditMode ? [] : Validators.required]
     });
   
-    // If in edit mode, patch the form values
     if (this.isEditMode) {
       this.taskForm.patchValue({
         Name: this.task.Name,
         Description: this.task.Description,
         DueDate: this.task.DueDate,
         TaskLevel: this.task.Level,
-        UserId: this.task.AssigneeId // Keep the value but disable the field
+        UserId: this.task.AssigneeId
       });
     }
-    // if (this.isEditMode) {
-    //   this.taskForm.patchValue(this.task);
-    // }
-    // this.addTaskForm.valueChanges.subscribe(values => {
-    //   console.log('Form values updated:', values);
-    // });
+    
   }
 
   dateValidator(): ValidatorFn {
@@ -136,15 +128,13 @@ export class AddTaskComponent implements OnInit {
       task.Name=this.taskForm.get('Name')?.value??'';
       task.Description=this.taskForm.get('Description')?.value??'';
       task.DueDate=this.taskForm.get('DueDate')?.value??'';
-      task.Status=1;
-      task.Level=+this.taskForm.get('TaskLevel')?.value??'';
+      task.Status=0;
+      task.Level=+this.taskForm.get('TaskLevel')?.value;
       task.AssigneeId=this.taskForm.get('UserId')?.value??'';
       if(bzz)
       task.OwnerId = bzz;
   
-      console.log(typeof this.taskForm.get('TaskLevel')?.value, this.taskForm.get('TaskLevel')?.value);
-
-  
+     
     this.tasksService.addTask(task).subscribe({
       next: res => {
         this.messageService.add({
@@ -153,6 +143,8 @@ export class AddTaskComponent implements OnInit {
           detail: 'Task successfully added'
         });
         this.dialogRef.close();
+        if(this.companyId)
+        this.tasksService.getTasks(this.companyId);
       },
       error: err => {
         console.error('Error response', err.error);

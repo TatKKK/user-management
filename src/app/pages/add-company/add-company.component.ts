@@ -1,7 +1,6 @@
 import { Component } from '@angular/core'
 import {
   FormGroup,
-  FormControl,
   FormBuilder,
   Validators,
   AbstractControl,
@@ -12,12 +11,8 @@ import { AbstractControlOptions } from '@angular/forms'
 import { CompaniesService } from '../../services/companies.service'
 import { MessageService } from 'primeng/api'
 import { Router } from '@angular/router'
-
 import { User } from '../../models/user.model'
-import { Company } from '../../models/company.model'
-import { Registration } from '../../models/companyAndUser.model'
 import { CompanyValidator } from '../../models/companyAndUser.model'
-
 
 @Component({
   selector: 'app-add-company',
@@ -27,21 +22,17 @@ import { CompanyValidator } from '../../models/companyAndUser.model'
 export class AddCompanyComponent {
   title = 'User Management'
   companyForm: FormGroup
-
-  adminUser!:User
-  
+  adminUser!: User
 
   confirmPasswordValidator: ValidatorFn = (
     control: AbstractControl
   ): ValidationErrors | null => {
-    const password = control.get('Password')?.value;
-    const confirmPassword = control.get('ConfirmPassword')?.value;
-    return password && confirmPassword && password === confirmPassword //ese tu ar chavwer dirty-ze errors agdebs
+    const password = control.get('Password')?.value
+    const confirmPassword = control.get('ConfirmPassword')?.value
+    return password && confirmPassword && password === confirmPassword
       ? null
-      : { passwordError: true };
+      : { passwordError: true }
   }
-  
-  
 
   constructor (
     private fb: FormBuilder,
@@ -76,21 +67,9 @@ export class AddCompanyComponent {
             Validators.pattern(/^-?(0|[1-9]\d*)?$/)
           ]
         ],
-        Email: [
-          '',
-          [
-            Validators.required,            
-            Validators.email
-          ]
-        ],
+        Email: ['', [Validators.required, Validators.email]],
         Name: ['', [Validators.required, Validators.minLength(2)]],
-        TaxCode: [
-          '',
-          [
-            Validators.required,
-          this.validateTaxCode
-          ]
-        ],
+        TaxCode: ['', [Validators.required, this.validateTaxCode]],
         Address: this.fb.group({
           street: [''],
           city: [''],
@@ -102,30 +81,32 @@ export class AddCompanyComponent {
           [
             Validators.required,
             Validators.minLength(6),
-            Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/)
+            Validators.pattern(
+              /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/
+            )
           ]
         ],
-        ConfirmPassword: [
-          '',
-          [Validators.required]
-        ],
+        ConfirmPassword: ['', [Validators.required]],
         RoleId: ['1']
       },
       { validators: this.confirmPasswordValidator } as AbstractControlOptions
-    );
-
+    )
   }
 
-  validateTaxCode(control:AbstractControl):ValidationErrors | null {
-    return !(control.value.length === 9 || control.value.length === 11)?{invalidTaxCode:{value:control.value}}:null;
+  validateTaxCode (control: AbstractControl): ValidationErrors | null {
+    return !(control.value.length === 9 || control.value.length === 11)
+      ? { invalidTaxCode: { value: control.value } }
+      : null
   }
 
-  addCompany() {
+  addCompany () {
     if (this.companyForm.valid) {
       const companyValidator: CompanyValidator = {
         Name: this.companyForm.get('Name')?.value,
         TaxCode: this.companyForm.get('TaxCode')?.value,
-        Address: `${this.companyForm.get('Address.street')?.value}, ${this.companyForm.get('Address.city')?.value}, ${this.companyForm.get('Address.zip')?.value}`,
+        Address: `${this.companyForm.get('Address.street')?.value}, ${
+          this.companyForm.get('Address.city')?.value
+        }, ${this.companyForm.get('Address.zip')?.value}`,
         Fname: this.companyForm.get('Fname')?.value,
         Lname: this.companyForm.get('Lname')?.value,
         Phone: this.companyForm.get('Phone')?.value,
@@ -135,35 +116,35 @@ export class AddCompanyComponent {
         ConfirmPassword: this.companyForm.get('ConfirmPassword')?.value,
         IsActive: true,
         RoleId: 1,
-        Role: { Id: 1, Name: 'admin' }}
+        Role: { Id: 1, Name: 'admin' }
+      }
 
-        this.companiesService.addCompany(companyValidator).subscribe({
-            next: res => {
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Info',
-                    detail: 'Company successfully added'
-                });
-                setTimeout(() => {
-                    this.router.navigate(['/']);
-                }, 3000);
-            },
-            error: err => {
-                console.error('Error response', err.error);
-                this.messageService.add({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: 'An error occurred while adding the company'
-                });
-            }
-        });
-    } else {
-        this.messageService.add({
+      this.companiesService.addCompany(companyValidator).subscribe({
+        next: res => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Info',
+            detail: 'Company successfully added'
+          })
+          setTimeout(() => {
+            this.router.navigate(['/'])
+          }, 3000)
+        },
+        error: err => {
+          console.error('Error response', err.error)
+          this.messageService.add({
             severity: 'error',
             summary: 'Error',
-            detail: 'Form is not valid'
-        });
+            detail: 'An error occurred while adding the company'
+          })
+        }
+      })
+    } else {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Form is not valid'
+      })
     }
-}
-
+  }
 }

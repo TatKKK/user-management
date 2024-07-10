@@ -16,10 +16,10 @@ main {
     box-sizing: inherit;
     position: relative;
   }
-
+/* 
   .page-logo {
     width: 11.2rem;
-  }
+  } */
 
   .content {
     display: flex;

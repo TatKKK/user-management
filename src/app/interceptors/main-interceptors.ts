@@ -28,20 +28,6 @@ export class MainInterceptor implements HttpInterceptor {
     let request: HttpRequest<any> = req
 
     if (token) {
-      // if (req.body instanceof FormData) {
-      //     request = req.clone({
-      //         setHeaders: {
-      //             'Authorization': `Bearer ${token}`
-      //         }
-      //     });
-      // } else {
-      //     request = req.clone({
-      //         setHeaders: {
-      //             'Content-Type': 'application/json',
-      //             'Authorization': `Bearer ${token}`
-      //         }
-      //     });
-      // }
       request = req.clone({
         setHeaders: {
           'Content-Type': 'application/json',
@@ -57,41 +43,52 @@ export class MainInterceptor implements HttpInterceptor {
     }
 
     return next.handle(request).pipe(
-      catchError(res => {
-        if (res.status === 401 && this.router.url !== '/') {
-          // this.router.navigate(['/home']);
-          this.messageService.add({
-            key: 'Unauthorized',
-            severity: 'error',
-            detail: 'Unauthorized',
-            summary: 'Unauthorized'
-          });
-          return throwError(
-            () => new Error('Unauthorized or InvalidCredentials')
-          )
-        } else if (res.status === 401 && this.router.url == '/') {
-          this.messageService.add({
-            key: 'invalidCredentials',
-            severity: 'error',
-            detail: 'Login failed',
-            summary: 'Invalid Credentials'
-          })
-          return throwError(() => new Error('Login failed'))
+      catchError((res: HttpErrorResponse) => {
+        let errorMessage = 'An error occurred';
+        
+        if (res.status === 401) {
+          if (this.router.url !== '/') {
+            this.messageService.add({
+              key: 'Unauthorized',
+              severity: 'warning',
+              summary: 'Unauthorized',
+              detail: 'Your session has expired. Please log in again.'
+            });
+            this.authService.logout();
+            this.router.navigate(['/login']);
+          } else {
+            this.messageService.add({
+              key: 'invalidCredentials',
+              severity: 'error',
+              summary: 'Invalid Credentials',
+              detail: 'Login failed'
+            });
+          }
         } else {
-          let errorMessage = res.error?.message || 'An error occurred'
           if (typeof res.error === 'string') {
             try {
-              const parsedError = JSON.parse(res.error)
-              errorMessage = parsedError.message || errorMessage
+              const parsedError = JSON.parse(res.error);
+              errorMessage = parsedError.message || errorMessage;
             } catch (e) {
-              errorMessage = res.error
+              errorMessage = res.error;
             }
+          } else {
+            errorMessage = res.error?.message || errorMessage;
           }
-          alert(res.error)
-          console.error('HTTP error:', res.error)
-          return throwError(() => new Error(res.error))
+
+          this.messageService.add({
+            key: 'serror',
+            sticky: true,
+            severity: 'error',
+            summary: 'Server Error',
+            detail: errorMessage
+          });
+
+          console.error('HTTP error:', res.error);
         }
+
+        return throwError(() => new Error(errorMessage));
       })
-    )
+    );
   }
 }

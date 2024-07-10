@@ -1,0 +1,26 @@
+.overdue {
+  background-color: rgb(251, 238, 248);
+}
+
+/* .your-task {
+  font-weight: bold;
+} */
+
+.start-btn {
+  background-color: var(--bright-blue);
+  border: none;
+}
+.action-buttons{
+    display: flex;
+    gap: 7px;
+}
+.checkbox{
+    text-align: center;
+}
+.checkbox input{
+    width:fit-content;
+}
+
+.cursor-pointer{
+    cursor:pointer;
+}

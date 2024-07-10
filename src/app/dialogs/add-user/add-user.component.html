@@ -3,7 +3,7 @@
 <div class="form-container">
   <p-toast></p-toast>
   <div class="overlay-grey">
-    <div class="form-title">
+    <!-- <div class="form-title">
       <h2 *ngIf="!isEditMode">
         Add New User<i class="pi pi-user-plus" style="font-size: 1.6rem"></i>
       </h2>
@@ -11,7 +11,7 @@
         Edit User<i class="pi pi-user-edit" style="font-size: 1.6rem"></i>
       </h2>
 
-    </div>
+    </div> -->
     <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="form-group">
         <label for="Fname">
           Fname: <span *ngIf="!isEditMode" [ngClass]="{
@@ -166,8 +166,7 @@
           <option value="" disabled selected >--- Select role--- </option>
           <option value="1">Admin</option>
           <option value="2">Developer</option>
-          <option value="3">Manager</option>
-          <option value="4">Operator</option>        
+          <option value="3">Manager</option>      
         </select>
         <label for="IsActive" *ngIf = "isEditMode" >
          Useri is active

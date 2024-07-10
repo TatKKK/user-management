@@ -11,10 +11,11 @@ import { AuthService } from '../../services/auth.service';
 })
 export class HomeComponent implements OnInit {
 title="User Management";
-
 userRole:string="";
 isLoggedIn:boolean=false;
 
+public imagePath="../assets/cat.jpg";
+public imageWidth=200;
 
 constructor(
   private dialogService:DialogService,
@@ -30,16 +31,16 @@ ngOnInit(): void {
   });
 } 
 
+
+
 openLoginDialog(): void {
   const ref = this.dialogService.open(LoginComponent, {
-    header: 'Sign In',
-    width: '30%',
+    header:'Sign In',
+    width: '25%',
     styleClass:'custom-login',
-    // closable:false,
     contentStyle: {"max-height": "100vh", "overflow": "auto"},
     draggable: true,
     resizable: true,
-    dismissableMask: true
   });   
 }
 

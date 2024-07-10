@@ -15,7 +15,7 @@ import { LoginComponent } from '../../dialogs/login/login.component';
 })
 export class ViewCompaniesComponent implements OnInit {
 
-isLoading:boolean=false;
+isLoading:boolean=true;
 
 company!:Registration;
 companies:Registration[]=[];
@@ -27,14 +27,11 @@ onSelect(company: Registration): void {
   this.selectedCompany = company;
 }
 ngOnInit(): void {
-  this.isLoading=true;
   this.getCompanies();
   this.isLoading=false;
-  console.log(this.companies);
 }
 constructor(
   private cs:CompaniesService,
-  private messageService:MessageService,
   private dialogService:DialogService
 ){
 
@@ -43,32 +40,6 @@ getCompanies(): void {
   this.cs.getCompanies().subscribe(companies => {
     this.companies = companies;
   });
-}
-
-deleteCompany(companyAndUser:Registration): void {  
-  if(companyAndUser.Company&&companyAndUser.Company.CompanyId){
-    this.cs.deleteCompany(companyAndUser.Company.CompanyId).subscribe({
-      next: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Info',
-          detail: 'Successfully deleted',
-          life: 4000
-        });
-        this.companies = this.companies.filter(c => c.Company?.CompanyId !== companyAndUser.Company?.CompanyId);
-        
-      },
-      error: error => {
-        console.error('Error deleting company:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to delete company',
-          life: 4000
-        });
-      }
-    });
-  } 
 }
 
 handleClick(item: any, event: MouseEvent): void {

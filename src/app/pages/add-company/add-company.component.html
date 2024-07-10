@@ -1,292 +1,295 @@
 <div class="form-container">
   <p-toast></p-toast>
-  <div class="overlay-grey">
-    <div class="form-title">
-      <h2>
-        Create your login <i class="pi pi-lock" style="font-size: 1.6rem"></i>
-      </h2>
-      <div class="pill-group">
-        <a href="/" class="pill"> Back to homepage
-        </a>
-      </div>
+  <div class="form-title">
+    <h2>
+      Create your login <i class="pi pi-lock" style="font-size: 1.6rem"></i>
+    </h2>
+    <div class="pill-group">
+      <a href="/" class="pill"> Back to homepage
+      </a>
     </div>
-    <form *ngIf="companyForm" [formGroup]="this.companyForm" (ngSubmit)="addCompany()" class="form-group">
-      <div class="sub-form-group">
-        <h3>Company representative</h3>
-        <label for="Fname">
-          Your name: <span [ngClass]="{
+  </div>
+  <form *ngIf="companyForm" [formGroup]="this.companyForm" (ngSubmit)="addCompany()" class="form-group">
+    <div class="sub-form-group">
+      <h3>Company representative</h3>
+      <label for="Fname">
+        Your name: <span [ngClass]="{
             hide:
               !companyForm.controls['Fname'].errors &&
               companyForm.controls['Fname'].dirty &&
               companyForm.controls['Fname'].touched
           }" class="pi pi-asterisk superscript" style="color: var(--gray-500); font-size: var(--fs-xs)">
-          </span>
-          <div class="input-group">
-            <input type="text" formControlName="Fname" [ngClass]="{
+        </span>
+        <div class="input-group">
+          <input type="text" formControlName="Fname" [ngClass]="{
               error:
                 companyForm.controls['Fname'].errors &&
                 companyForm.controls['Fname'].dirty
             }" />
-          </div>
-          <div>
-            <span *ngIf="companyForm.controls['Fname']?.errors?.['minlength'] && companyForm.controls['Fname'].dirty
+        </div>
+        <div>
+          <span *ngIf="companyForm.controls['Fname']?.errors?.['minlength'] && companyForm.controls['Fname'].dirty
             &&companyForm.controls['Fname'].touched" class="alert">
-              Name must be at least 6 characters
-            </span>
-          </div>
-          <div>
-            <span *ngIf="companyForm.controls['Fname']?.errors?.['pattern'] && companyForm.controls['Fname'].dirty
+            Name must be at least 6 characters
+          </span>
+        </div>
+        <div>
+          <span *ngIf="companyForm.controls['Fname']?.errors?.['pattern'] && 
+          companyForm.controls['Fname'].dirty
             &&companyForm.controls['Fname'].touched" class="alert">
-              Invalid pattern
-            </span>
-          </div>
-        </label>
+            Invalid pattern
+          </span>
+        </div>
+      </label>
 
-        <label for="Lname">
-          Last name: <span [ngClass]="{
+      <label for="Lname">
+        Last name: <span [ngClass]="{
             hide:
               !companyForm.controls['Lname'].errors &&
               companyForm.controls['Lname'].dirty &&
               companyForm.controls['Lname'].touched
           }" class="pi pi-asterisk superscript" style="color: var(--gray-500); font-size: var(--fs-xs)">
-          </span>
-          <div class="input-group">
-            <input type="text" formControlName="Lname" [ngClass]="{
+        </span>
+        <div class="input-group">
+          <input type="text" formControlName="Lname" [ngClass]="{
               error:
                 companyForm.controls['Lname'].errors &&
                 companyForm.controls['Lname'].dirty
             }" />
 
-          </div>
+        </div>
 
-          <div>
-            <span *ngIf="companyForm.controls['Lname']?.errors?.['minlength'] && companyForm.controls['Lname'].dirty
-          &&companyForm.controls['Lname'].touched" class="alert">
-              Last name must be at least 6 characters
-            </span>
-          </div>
-          <div>
-            <span *ngIf="companyForm.controls['Lname']?.errors?.['pattern'] && companyForm.controls['Lname'].dirty
-            &&companyForm.controls['Lname'].touched" class="alert">
-              Invalid pattern
-            </span>
-          </div>
-        </label>
+        <div>
+          <span *ngIf="companyForm.controls['Lname']?.errors?.['minlength'] && 
+          companyForm.controls['Lname'].dirty&&
+          companyForm.controls['Lname'].touched" class="alert">
+            Last name must be at least 6 characters
+          </span>
+        </div>
+        <div>
+          <span *ngIf="companyForm.controls['Lname']?.errors?.['pattern'] &&
+           companyForm.controls['Lname'].dirty&&
+           companyForm.controls['Lname'].touched" class="alert">
+            Invalid pattern
+          </span>
+        </div>
+      </label>
 
-        <label for="Phone">
-          Mobile number <span [ngClass]="{
+      <label for="Phone">
+        Mobile number <span [ngClass]="{
             hide:
               !companyForm.controls['Phone'].errors &&
               companyForm.controls['Phone'].dirty &&
               companyForm.controls['Phone'].touched
           }" class="pi pi-asterisk superscript" style="color: var(--gray-500); font-size: var(--fs-xs)">
-          </span>
-          <div class="input-group">
-            <input type="text" formControlName="Phone" [ngClass]="{
+        </span>
+        <div class="input-group">
+          <input type="text" formControlName="Phone" [ngClass]="{
               error:
                 companyForm.controls['Phone'].errors &&
                 companyForm.controls['Phone'].dirty
             }" />
 
-          </div>
-          <div>
-            <span *ngIf="companyForm.controls['Phone']?.errors?.['minlength'] && companyForm.controls['Phone'].dirty
+        </div>
+        <div>
+          <span *ngIf="companyForm.controls['Phone']?.errors?.['minlength'] && companyForm.controls['Phone'].dirty
         &&companyForm.controls['Phone'].touched" class="alert">
-              Invalid mobile number
-            </span>
-          </div>
-        </label>
-        <label for="Email">
-          Email <span [ngClass]="{
+            Invalid mobile number
+          </span>
+        </div>
+      </label>
+      <label for="Email">
+        Email <span [ngClass]="{
             hide:
               !companyForm.controls['Email'].errors &&
               companyForm.controls['Email'].dirty &&
               companyForm.controls['Email'].touched
           }" class="pi pi-asterisk superscript" style="color: var(--gray-500); font-size: var(--fs-xs)">
-          </span>
-          <div class="input-group">
-            <input type="text" formControlName="Email" [ngClass]="{
+        </span>
+        <div class="input-group">
+          <input type="text" formControlName="Email" [ngClass]="{
                error:
                  companyForm.controls['Email'].errors &&
                  companyForm.controls['Email'].dirty
              }" />
 
-          </div>
-          <div>
-            <span *ngIf="companyForm.controls['Email']?.errors?.['minlength'] && companyForm.controls['Email'].dirty
+        </div>
+        <div>
+          <span *ngIf="companyForm.controls['Email']?.errors?.['minlength'] && companyForm.controls['Email'].dirty
           &&companyForm.controls['Email'].touched" class="alert">
-              Invalid email
-            </span>
-          </div>
-        </label>
-      </div>
+            Invalid email
+          </span>
+        </div>
+      </label>
+    </div>
 
-      <div class="sub-form-group">
-        <h3>Company details</h3>
-        <label for="Name">
-          Company name <span>(Min 2 characters)</span>: <span [ngClass]="{
+    <div class="sub-form-group">
+      <h3>Company details</h3>
+      <label for="Name">
+        Company name <span>(Min 2 characters)</span>: <span [ngClass]="{
             hide:
               !companyForm.controls['Name'].errors &&
               companyForm.controls['Name'].dirty &&
               companyForm.controls['Name'].touched
           }" class="pi pi-asterisk superscript" style="color: var(--gray-500); font-size: var(--fs-xs)">
-          </span>
-          <div class="input-group">
-            <input type="text" formControlName="Name" [ngClass]="{
+        </span>
+        <div class="input-group">
+          <input type="text" formControlName="Name" [ngClass]="{
               error:
                 companyForm.controls['Name'].errors &&
                 companyForm.controls['Name'].dirty
             }" />
 
-          </div>
-          <div>
+        </div>
+        <div>
 
-            <span *ngIf="companyForm.controls['Name']?.errors?.['minlength'] && companyForm.controls['Name'].dirty
-  &&companyForm.controls['Name'].touched" class="alert">
-              Company name must be at least 6 characters
-            </span>
-          </div>
-          <div>
-            <span *ngIf="companyForm.controls['Name']?.errors?.['pattern'] && companyForm.controls['Name'].dirty
+          <span *ngIf="companyForm.controls['Name']?.errors?.['minlength'] && 
+          companyForm.controls['Name'].dirty&&
+          companyForm.controls['Name'].touched" class="alert">
+            Company name must be at least 6 characters
+          </span>
+        </div>
+        <div>
+          <span *ngIf="companyForm.controls['Name']?.errors?.['pattern'] && companyForm.controls['Name'].dirty
             &&companyForm.controls['Name'].touched" class="alert">
-              Username must not include special characters: /, :, $, *, ?, ", <,>, |
-            </span>
-          </div>
-        </label>
+            Username must not include special characters: /, :, $, *, ?, ", <,>, |
+          </span>
+        </div>
+      </label>
 
-        <label for="TaxCode">Tax Code: <span [ngClass]="{
+      <label for="TaxCode">Tax Code: <span [ngClass]="{
           hide:
             !companyForm.controls['TaxCode'].errors &&
             companyForm.controls['TaxCode'].dirty &&
             companyForm.controls['TaxCode'].touched
         }" class="pi pi-asterisk superscript" style="color: var(--gray-500); font-size: var(--fs-xs)">
-          </span>
-          <div class="input-group">
-            <input type="text" formControlName="TaxCode" [ngClass]="{
+        </span>
+        <div class="input-group">
+          <input type="text" formControlName="TaxCode" [ngClass]="{
           error:
             companyForm.controls['TaxCode'].errors &&
             companyForm.controls['TaxCode'].dirty &&
             companyForm.controls['TaxCode'].touched
         }" />
 
-          </div>
-          <div>
-            <span *ngIf="
+        </div>
+        <div>
+          <span *ngIf="
           companyForm.controls['TaxCode'].errors &&
           companyForm.controls['TaxCode'].dirty
         " class="alert">
-              Tax code must be either 9 or 11 characters
-            </span>
-          </div>
-        </label>
-      </div>
-      <div formGroupName="Address" class="sub-form-group">
-        <h3>Address</h3>
+            Tax code must be either 9 or 11 characters
+          </span>
+        </div>
+      </label>
+    </div>
+    <div formGroupName="Address" class="sub-form-group">
+      <h3>Address</h3>
 
-        <label for="street">
-          Street:
-          <div class="input-group">
-            <input id="street" type="text" formControlName="street" />
-            <span class="pi pi-asterisk" style="color: transparent; font-size: var(--fs-xs)"></span>
-          </div>
-        </label>
+      <label for="street">
+        Street:
+        <div class="input-group">
+          <input id="street" type="text" formControlName="street" />
+          <span class="pi pi-asterisk" style="color: transparent; font-size: var(--fs-xs)"></span>
+        </div>
+      </label>
 
-        <label for="city">
-          City:
-          <div class="input-group">
-            <input id="city" type="text" formControlName="city" class="form-control" />
-            <span class="pi pi-asterisk" style="color: transparent; font-size: var(--fs-xs)"></span>
-          </div>
-        </label>
-        <label for="zip">
-          Zip Code:
-          <div class="input-group">
-            <input id="zip" type="text" formControlName="zip" class="form-control" />
-            <span class="pi pi-asterisk superscript" style="color: transparent; font-size: var(--fs-xs)"></span>
-          </div>
-        </label>
-      </div>
+      <label for="city">
+        City:
+        <div class="input-group">
+          <input id="city" type="text" formControlName="city" class="form-control" />
+          <span class="pi pi-asterisk" style="color: transparent; font-size: var(--fs-xs)"></span>
+        </div>
+      </label>
+      <label for="zip">
+        Zip Code:
+        <div class="input-group">
+          <input id="zip" type="text" formControlName="zip" class="form-control" />
+          <span class="pi pi-asterisk superscript" style="color: transparent; font-size: var(--fs-xs)"></span>
+        </div>
+      </label>
+    </div>
 
-      <div class="sub-form-group">
-        <h3>Account details</h3>
-        <label for="Username">Username: <span [ngClass]="{
+    <div class="sub-form-group">
+      <h3>Account details</h3>
+      <label for="Username">Username: <span [ngClass]="{
           hide:
             !companyForm.controls['Username'].errors &&
             companyForm.controls['Username'].dirty &&
             companyForm.controls['Username'].touched
         }" class="pi pi-asterisk superscript" style="color: var(--gray-500); font-size: var(--fs-xs)">
-          </span>
-          <div class="input-group">
-            <input type="text" formControlName="Username" [ngClass]="{
+        </span>
+        <div class="input-group">
+          <input type="text" formControlName="Username" [ngClass]="{
         error:
           companyForm.controls['Username'].errors &&
           companyForm.controls['Username'].dirty &&
           companyForm.controls['Username'].touched
       }" />
-          </div>
-          <div>
-            <span *ngIf="
+        </div>
+        <div>
+          <span *ngIf="
           companyForm.controls['Username'].errors &&
           companyForm.controls['Username'].dirty
         " class="alert">
-              Username must be at least 6 characters
-            </span>
-          </div>
-        </label>
-        <label for="Password">Password <span>(Min 6 characters)</span>
-          <span [ngClass]="{
+            Username must be at least 6 characters
+          </span>
+        </div>
+      </label>
+      <label for="Password">Password <span>(Min 6 characters)</span>
+        <span [ngClass]="{
             hide:
               !companyForm.controls['Password'].errors &&
               companyForm.controls['Password'].dirty &&
               companyForm.controls['Password'].touched
           }" class="pi pi-asterisk superscript" style="color: var(--gray-500); font-size: var(--fs-xs)">
-          </span>
-          <div class="input-group">
-            <input type="text" formControlName="Password" [ngClass]="{
+        </span>
+        <div class="input-group">
+          <input type="text" formControlName="Password" [ngClass]="{
         error:
           companyForm.controls['Password'].errors &&
           companyForm.controls['Password'].dirty &&
           companyForm.controls['Password'].touched
       }" />
-          </div>
-          <div>
-            <span *ngIf="
+        </div>
+        <div>
+          <span *ngIf="
           companyForm.controls['Password'].errors &&
           companyForm.controls['Password'].dirty
         " class="alert">
-              Password must be at least 6 characters
-            </span>
-          </div>
-          <div>
-            <span *ngIf="
+            Password must be at least 6 characters
+          </span>
+        </div>
+        <div>
+          <span *ngIf="
           companyForm.controls['Password'].errors &&
           companyForm.controls['Password'].dirty
         " class="alert">
-               Password must include at least 1 upper case, 1 lower case, numeric, and special character
-            </span>
-          </div>
-        </label>
-        <label for="ConfirmPassword">Re-enter Password
-          <div class="input-group">
-            <input type="text" formControlName="ConfirmPassword" [ngClass]="{
+            Password must include at least 1 upper case, 1 lower case, numeric, and special character
+          </span>
+        </div>
+      </label>
+      <label for="ConfirmPassword">Re-enter Password
+        <div class="input-group">
+          <input type="text" formControlName="ConfirmPassword" [ngClass]="{
               error:
                 companyForm.errors?.['passwordError'] &&
                 companyForm.controls['ConfirmPassword'].dirty &&
                 companyForm.controls['ConfirmPassword'].touched
             }" />
-          </div>
-          <div>
-            <span *ngIf="companyForm.errors?.['passwordError'] && 
+        </div>
+        <div>
+          <span *ngIf="companyForm.errors?.['passwordError'] && 
               companyForm.controls['ConfirmPassword'].dirty &&
               companyForm.controls['ConfirmPassword'].touched" class="alert">
-              Passwords must match
-            </span>
-          </div>
-        </label>
-      </div>
-      <button type="submit" class="submit-btn" [disabled]="!companyForm.valid">
-        Submit
-      </button>
-    </form>
-  </div>
+            Passwords must match
+          </span>
+        </div>
+      </label>
+    </div>
+    <button type="submit" class="submit-btn" [disabled]="!companyForm.valid">
+      Submit
+    </button>
+  </form>
+
 </div>

@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { DynamicDialogModule, DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DataViewModule } from 'primeng/dataview';
 import { TableModule } from 'primeng/table';
 import { FormsModule,  ReactiveFormsModule} from '@angular/forms';
@@ -17,11 +17,8 @@ import { LoginComponent } from './dialogs/login/login.component';
 import { AdminPageComponent } from './pages/admin-page/admin-page.component';
 import { AddUserComponent } from './dialogs/add-user/add-user.component';
 import { HeaderComponent } from './components/header/header.component';
-import { ManagerComponent } from './pages/manager/manager.component';
-//import { MainInterceptor } from './interceptors/main-interceptors';
-import { AddTaskComponent } from './dialogs/add-task/add-task.component';
+import { AddEditTaskComponent } from './dialogs/add-edit-task/add-edit-task.component';
 import { ButtonModule } from 'primeng/button';
-import { AssigneePageComponent } from './pages/assignee-page/assignee-page.component';
 import { MainInterceptor } from './interceptors/main-interceptors';
 import { ReportsComponent } from './pages/reports/reports.component';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -33,6 +30,9 @@ import { SliderModule } from 'primeng/slider';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { PaginatorModule } from 'primeng/paginator';
 import { ViewTaskComponent } from './dialogs/view-task/view-task.component';
+import { TabViewModule } from 'primeng/tabview';
+import { TasksListComponent } from './components/tasks-list/tasks-list.component';
+import { UserpageComponent } from './pages/userpage/userpage.component';
 
 
 
@@ -46,12 +46,12 @@ import { ViewTaskComponent } from './dialogs/view-task/view-task.component';
     AdminPageComponent,
     AddUserComponent,
     HeaderComponent,
-    ManagerComponent,
-    AddTaskComponent,
-    AssigneePageComponent,
+    AddEditTaskComponent,
     ReportsComponent,
     FooterComponent,
-    ViewTaskComponent
+    ViewTaskComponent,
+    TasksListComponent,
+    UserpageComponent
   ],
   imports: [
     BrowserModule,
@@ -70,7 +70,8 @@ import { ViewTaskComponent } from './dialogs/view-task/view-task.component';
     TagModule,
     SliderModule,
     ProgressBarModule,
-    PaginatorModule
+    PaginatorModule,
+    TabViewModule
     ],
   providers: [ { provide: HTTP_INTERCEPTORS, useClass: MainInterceptor, multi: true }, DataViewModule,MessageService, DialogService, DynamicDialogRef],
   bootstrap: [AppComponent],

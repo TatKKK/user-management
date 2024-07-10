@@ -32,3 +32,7 @@ select option:checked{
 .hide{
   display:none;
 }
+
+.form-title i{
+  margin-left:7px;
+}

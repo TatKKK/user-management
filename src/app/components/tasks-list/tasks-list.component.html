@@ -1,0 +1,83 @@
+    
+    <h2> Company Id {{this.companyId}}</h2>
+    <p-table #dt2 [value]="tasks" dataKey="id" [rows]="7" [rowsPerPageOptions]="[7, 25, 50]" [loading]="isLoading"
+      [paginator]="true" [globalFilterFields]="['Name', 'Username','Status','Level', 'DueDate']"
+      [tableStyle]="{ 'min-width': '75rem' }">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Task</th>
+          <th>Assignee</th>
+          <!-- <th>Description</th> -->
+          <th>Stage</th>
+          <th>Priority</th>
+          <th>Due date</th>          
+          <th rowspan="2" *ngIf="this.userRole==='developer'">Mark Complete</th>          
+          <th rowspan="2" *ngIf="this.userRole==='developer'">Start</th>
+          <th rowspan="2" *ngIf="this.userRole==='manager'">Delete</th>
+        </tr>
+        <tr>
+          <th>
+            <p-columnFilter type="text" field="Name" placeholder="Search by task" ariaLabel="Filter Task" />
+          </th>
+          <th>
+            <p-columnFilter type="text" field='Username' placeholder="Search by username"
+              ariaLabel="Filter Username" />
+          </th>
+          <!-- <th>
+            <p-columnFilter type="text" field="Description" placeholder="Search by description"
+              ariaLabel="Filter Description" />
+          </th> -->
+          <th>
+            <p-columnFilter type="text" field="Status" placeholder="Search by Stage" ariaLabel="Filter stage" />
+          </th>
+          <th>
+            <p-columnFilter type="text" field="Level" placeholder="Search by level" ariaLabel="Filter Level" />
+          </th>
+          <th>
+            <p-columnFilter type="text" field="DueDate" placeholder="Search by due date" ariaLabel="Filter Due Date" />
+          </th>        
+          <!-- <th *ngIf="this.userRole==='developer'"></th>      
+          <th *ngIf="this.userRole==='developer'"></th>   
+           -->
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-task>
+        <tr [pSelectableRow]="task" (click)="onRowSelect(task)" class="cursor-pointer" [ngClass]="{'overdue':task.Status === 3,
+          'your-task': task.managerId === task.ownerId
+        }">
+          <td> {{ task.Name }}</td>
+          <!-- <td>{{ task.Description }}</td> -->
+          <td>{{ task.User?.Username}}</td>
+          <td>
+            <p-tag [value]="getStatusName(task.Status)" [severity]="getSeverity2(task.Status)"></p-tag>
+          </td>
+          <td>
+            <p-tag [value]="getLevelName(task.Level)" [severity]="getSeverity(task.Level)"></p-tag>
+          </td>
+          <td>{{ task.DueDate | date: 'mediumDate' }}</td>
+          
+          <td class="checkbox" *ngIf="this.userRole==='developer'">
+            <input type="checkbox" [checked]="task.Status === 2" 
+               [disabled]="task.Status === 2" 
+               (change)="changeStatus(task)" (click)="$event.stopPropagation()">
+          </td>
+          <td class="action-buttons" >
+            <button type="button" class="delete-btn" pButton pRipple icon="pi pi-trash" 
+            *ngIf="this.userRole==='manager'"
+              [disabled]=" task.Status === 1">
+            </button>
+            <button type="button" class="start-btn" pButton pRipple icon="pi pi-play" 
+            *ngIf="this.userRole==='developer'"
+            [disabled]=" task.Status === 1 || task.Status === 2 || task.Status===3"
+            (click)="startTask(task, $event)" >
+          </button>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="6">No tasks found.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+

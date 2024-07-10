@@ -1,7 +1,14 @@
 <main class="main">
   <div class="content">
     <div class="left-side">
-      <img src="../assets/cat.jpg" alt="logo" class="page-logo">
+      <!-- <img src="{{imagePath}}" alt="logo" width="{{imageWidth}} "> -->
+       @if(imagePath){
+        <img [src]="imagePath" alt="logo"[width]="imageWidth">
+       }
+       @else {
+        <h2> No image available!</h2>
+       }
+      
       <h1 class="app-title"> {{ title }}</h1>
       <p> Register your company and manage user roles 🎉</p>
     </div>

@@ -1,0 +1,46 @@
+<p-table #dt2 [value]="tasks" dataKey="id" [rows]="7" [rowsPerPageOptions]="[7, 25, 50]" [loading]="isLoading"
+      [paginator]="true"  
+ [globalFilterFields]="['Fname', 'Lname', 'Username']"
+  [tableStyle]="{ 'min-width': '85rem' }">
+
+  <ng-template pTemplate="header">
+    <tr>
+      <th class="fit-content">Fname</th>
+      <th class="fit-content">Lname</th>
+      <th class="fit-content">Username</th>
+      <th class="fit-content">Completed</th>
+      <th class="fit-content">New</th>
+      <th class="fit-content">InProgress</th>
+      <th class="fit-content">Overdue</th>
+    </tr>
+    <tr>
+      <th>
+        <p-columnFilter type="text" field="FName" placeholder="Search by fname" ariaLabel="Filter name" />
+      </th>
+      <th>
+        <p-columnFilter type="text" field="Lname" placeholder="Search by lname" ariaLabel="Filter by lname" />
+      </th>
+      <th>
+        <p-columnFilter type="text" field='Username' placeholder="Search by username" ariaLabel="Filter Username" />
+      </th>
+    </tr>
+  </ng-template>
+  
+  <ng-template pTemplate="body" let-report>
+    <tr>
+      <td>{{report.Fname}} </td>
+      <td>{{report.Lname}}</td>
+      <td>{{report.Username}}</td>
+      <td>{{report.CompletedTasks}}</td>
+      <td>{{ report.NewTasks}}</td>
+      <td>{{report.InProgressTasks}}</td>
+      <td>{{report.OverdueTasks}}</td>
+    </tr>
+  </ng-template>
+  
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="6">No users/reports found.</td>
+    </tr>
+  </ng-template>
+</p-table>

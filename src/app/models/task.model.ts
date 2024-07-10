@@ -20,9 +20,6 @@ export class Task{
 }
 
 export enum TaskLevel{
-    // Easy = 'Easy',
-    // Medium = 'Medium',
-    // Advanced = 'Advanced'
     Low=0,
     Medium=1,
     High=2
@@ -33,7 +30,6 @@ export enum TaskStatus{
     InProgress = 1,
     Completed = 2,
     Overdue = 3,
-    Cancelled = 4
 }
 
 export class EditTaskDto {

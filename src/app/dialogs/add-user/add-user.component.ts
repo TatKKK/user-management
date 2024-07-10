@@ -11,7 +11,7 @@ import { UserDto } from '../../models/user.model';
 @Component({
   selector: 'app-add-user',
   templateUrl: './add-user.component.html',
-  styleUrls: ['./add-user.component.css', './../../pages/add-company/add-company.component.css']
+  styleUrls: ['./add-user.component.css']
 })
 export class AddUserComponent implements OnInit {
 
@@ -60,8 +60,8 @@ companyId:number | null = null;
    
 
     this.userForm = this.fb.group({
-      Fname:['', [Validators.required, Validators.minLength(3), Validators.pattern(/^[a-zA-Z]+$/)]],
-      Lname:['', [Validators.required, Validators.minLength(3), Validators.pattern(/^[a-zA-Z]+$/)]],
+      Fname:['', [Validators.required, Validators.minLength(3),  Validators.pattern(/^([a-zA-Z]+|[\u10D0-\u10F0]+)$/)]],
+      Lname:['', [Validators.required, Validators.minLength(3),  Validators.pattern(/^([a-zA-Z]+|[\u10D0-\u10F0]+)$/)]],
     Phone:['', [Validators.required, Validators.maxLength(9), Validators.minLength(9), Validators.pattern(/^-?(0|[1-9]\d*)?$/)]],
     Email:['', [Validators.required, Validators.email]],
       Username: ['',Validators.required],

@@ -47,10 +47,10 @@ export class LoginComponent implements OnInit {
 private routeBasedOnUserRole(): void {
   if (this.userRole === 'admin') {
     this.router.navigate(['/adminPage']);
-  } else if(this.userRole === 'manager'){
-      this.router.navigate(['/managerPage']);
+  } else if(this.userRole === 'manager' ||this.userRole === 'developer'){
+      this.router.navigate(['/userPage']);
   }else{
-    this.router.navigate(['/operatorPage']);
+    this.router.navigate(['/']);
   }
 }
 
