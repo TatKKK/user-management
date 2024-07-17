@@ -2,7 +2,40 @@
   <p-toast></p-toast>
   <div class="overlay-grey">
     <h2> Company Id :{{companyId}} </h2>
-    <form [formGroup]="taskForm" (ngSubmit)="onSubmit()" class="form-group">
+
+    <div *ngIf="isViewMode">
+      <!-- View Mode -->
+      <div>
+        <label>Task Name:</label>
+        <span>{{ this.task.Name }}</span>
+      </div>
+      <div>
+        <label>Description:</label>
+        <span>{{ this.task.Description}}</span>
+      </div>
+      <div>
+        <label>Created:</label>
+        <span>{{ this.task.CreateDate | date:'short' }}</span>
+      </div>
+      <div>
+        <label>Due Date:</label>
+        <span>{{ this.task.DueDate | date:'short' }}</span>
+      </div>
+      <div>
+        <label>Priority Level:</label>
+        <span>{{ getTaskLevelKey(taskForm.get('TaskLevel')?.value) }}</span>
+      </div>
+      
+       <div>
+        <label>Assigned to:</label>
+        <span>{{this.task.User?.Username }}</span>
+       </div>
+      
+      <button (click)="toggleJandabaMode()" [disabled]="this.userRole === 'developer'">Edit</button>
+    </div>
+
+    <form [formGroup]="taskForm" (ngSubmit)="onSubmit()" class="form-group"
+    *ngIf="isJandabaMode">
         <label for="Name">
           Task Name: <span *ngIf="!isEditMode" [ngClass]="{
             hide:

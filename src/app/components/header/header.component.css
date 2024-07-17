@@ -1,8 +1,7 @@
 .user-greeting{
     display:flex;
     align-items:center;
-    justify-content: space-between;
-    align-items:center;
+    justify-content: space-around;
 }
 .greeting-txt span{
     color:var(--vivid-pink);

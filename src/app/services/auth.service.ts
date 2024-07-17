@@ -1,88 +1,92 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Router } from '@angular/router';
-import { Login } from '../models/login.model';
-import { Observable , map} from 'rxjs';
-import { jwtDecode } from 'jwt-decode';
-import { BehaviorSubject } from 'rxjs';
-
+import { Injectable } from '@angular/core'
+import { HttpClient, HttpHeaders } from '@angular/common/http'
+import { Router } from '@angular/router'
+import { Login } from '../models/login.model'
+import { Observable, map } from 'rxjs'
+import { jwtDecode } from 'jwt-decode'
+import { BehaviorSubject } from 'rxjs'
+import { environment } from '../../environments/environment'
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  
-  private isLoggedInSubject = new BehaviorSubject<boolean>(this.hasToken());
-  public isLoggedIn$ = this.isLoggedInSubject.asObservable();
+  private url = `${environment.API_URL}/Users/Authenticate`
 
-  private userRoleSubject = new BehaviorSubject<'admin' | 'manager' | 'developer' | 'unknown'>('unknown');
-  public userRole$ = this.userRoleSubject.asObservable();
+  private isLoggedInSubject = new BehaviorSubject<boolean>(this.hasToken())
+  public isLoggedIn$ = this.isLoggedInSubject.asObservable()
 
-  private tokenExpirationTimer: any;
+  private userRoleSubject = new BehaviorSubject<
+    'admin' | 'manager' | 'developer' | 'unknown'
+  >('unknown')
+  public userRole$ = this.userRoleSubject.asObservable()
 
-  constructor(
-    private http: HttpClient, 
-    private router: Router
-  ) { 
-    this.checkTokenAndSetUserDetails();
+  private tokenExpirationTimer: any
+
+  constructor (private http: HttpClient, private router: Router) {
+    this.checkTokenAndSetUserDetails()
   }
 
-  authenticate(login: Login): Observable<any> {    
-    return this.http.post<any>('http://localhost:5096/api/Users/Authenticate', login)
-      .pipe(map(user => {
+  authenticate (login: Login): Observable<any> {
+    return this.http.post<any>(`${this.url}`, login).pipe(
+      map(user => {
         if (user && user.AccessToken) {
-          this.setSession(user.AccessToken);
+          this.setSession(user.AccessToken)
         }
-        return user;
-      }));
+        return user
+      })
+    )
   }
 
-  private setSession(token: string): void {
-    localStorage.setItem('token', token);  
-    // localStorage.setItem('isAuth', 'true'); 
-    this.setUserDetailsFromToken(token);
-    this.updateLoginStatus();
+  private setSession (token: string): void {
+    localStorage.setItem('token', token)
+    // localStorage.setItem('isAuth', 'true');
+    this.setUserDetailsFromToken(token)
+    this.updateLoginStatus()
   }
 
-  public getUserDetailsFromToken():void{
-    const token=this.getToken();
-    if(token){
+  public getUserDetailsFromToken (): void {
+    const token = this.getToken()
+    if (token) {
       this.setUserDetailsFromToken(token)
     }
   }
 
-  private setUserDetailsFromToken(token: string): void {
-    try {    
-      const decodedToken = jwtDecode<any>(token);
-      const userId = decodedToken['UserId'] || '';
-      const companyId = decodedToken['CompanyId'] || '';
-      const role = decodedToken['role'] as 'admin' |  'manager' | 'developer' | 'unknown';
-      const username = decodedToken['Username'] || '';       
-     
+  private setUserDetailsFromToken (token: string): void {
+    try {
+      const decodedToken = jwtDecode<any>(token)
+      const userId = decodedToken['UserId'] || ''
+      const companyId = decodedToken['CompanyId'] || ''
+      const role = decodedToken['role'] as
+        | 'admin'
+        | 'manager'
+        | 'developer'
+        | 'unknown'
+      const username = decodedToken['Username'] || ''
 
-      this.setLogoutTimer(token); 
+      this.setLogoutTimer(token)
 
-      localStorage.setItem('userId', userId);
-      localStorage.setItem('role', role);
-      localStorage.setItem('CompanyId', companyId);
-      localStorage.setItem('username', username);     
+      localStorage.setItem('userId', userId)
+      localStorage.setItem('role', role)
+      localStorage.setItem('CompanyId', companyId)
+      localStorage.setItem('username', username)
 
-      this.userRoleSubject.next(role);
+      this.userRoleSubject.next(role)
     } catch (error) {
-      console.error('Error decoding token', error);
-      this.clearSession();
+      console.error('Error decoding token', error)
+      this.clearSession()
     }
   }
 
-  private checkTokenAndSetUserDetails(): void {
-    const token = this.getToken();
+  private checkTokenAndSetUserDetails (): void {
+    const token = this.getToken()
     if (token) {
-      this.setUserDetailsFromToken(token);
+      this.setUserDetailsFromToken(token)
     }
   }
 
-  public getToken(): string | null {
-    return localStorage.getItem('token');
+  public getToken (): string | null {
+    return localStorage.getItem('token')
   }
 
   // private getUserIdFromToken(token: string): number | null {
@@ -101,101 +105,118 @@ export class AuthService {
   //   return this.getUserIdFromToken(token);
   // }
 
-  private getCompanyIdFromToken(token: string): number | null {
+  private getCompanyIdFromToken (token: string): number | null {
     try {
-      const decodedToken = jwtDecode<any>(token);
-      return +decodedToken['CompanyId'];
+      const decodedToken = jwtDecode<any>(token)
+      return +decodedToken['CompanyId']
     } catch (error) {
-      console.error('Error decoding token', error);
-      return null;
+      console.error('Error decoding token', error)
+      return null
     }
   }
 
-  public getCompanyId(): number | null {
-    const token = this.getToken();
-    if (!token) return null;
-    return this.getCompanyIdFromToken(token);
+  public getCompanyId (): number | null {
+    const token = this.getToken()
+    if (!token) return null
+    return this.getCompanyIdFromToken(token)
   }
 
-  private hasToken(): boolean {
-    return !!this.getToken();
+  private hasToken (): boolean {
+    return !!this.getToken()
   }
 
-  public isLoggedIn(): Observable<boolean> {
-    return this.isLoggedInSubject.asObservable();
+  public isLoggedIn (): Observable<boolean> {
+    return this.isLoggedInSubject.asObservable()
   }
 
-  public getUserRole(): Observable<'admin' | 'manager' | 'developer' | 'unknown'> {
-    return this.userRoleSubject.asObservable();
+  public getUserRole (): Observable<
+    'admin' | 'manager' | 'developer' | 'unknown'
+  > {
+    return this.userRoleSubject.asObservable()
   }
 
-  public getUserRoleSync(): 'admin' | 'manager' | 'developer' | 'unknown' {
-    return localStorage.getItem('role') as 'admin' |  'manager' | 'developer' | 'unknown' || 'unknown';
-  }
+  // public getUserRoleSync (): 'admin' | 'manager' | 'developer' | 'unknown' {
+  //   return (
+  //     (localStorage.getItem('role') as
+  //       | 'admin'
+  //       | 'manager'
+  //       | 'developer'
+  //       | 'unknown') || 'unknown'
+  //   )
+  // }
 
-  public isAdminSync(): boolean {
-    return this.getUserRoleSync() === 'admin';
-  }
+  // public isAdminSync (): boolean {
+  //   return this.getUserRoleSync() === 'admin'
+  // }
 
-  public isDeveloperSync(): boolean {
-    return this.getUserRoleSync() === 'developer';
-  }
+  // public isDeveloperSync (): boolean {
+  //   return this.getUserRoleSync() === 'developer'
+  // }
 
-  public isManagerSync(): boolean {
-    return this.getUserRoleSync() === 'manager';
-  }
+  // public isManagerSync (): boolean {
+  //   return this.getUserRoleSync() === 'manager'
+  // }
 
-  private getUserRoleFromToken(token: string): 'admin' | 'manager' | 'developer' | 'unknown' {
+  private getUserRoleFromToken (
+    token: string
+  ): 'admin' | 'manager' | 'developer' | 'unknown' {
     try {
-      const decodedToken = jwtDecode<any>(token);
-      return decodedToken['role'] as 'admin' | 'manager' | 'developer' | 'unknown';
+      const decodedToken = jwtDecode<any>(token)
+      return decodedToken['role'] as
+        | 'admin'
+        | 'manager'
+        | 'developer'
+        | 'unknown'
     } catch (error) {
-      console.error('Error decoding token', error);
-      return 'unknown';
+      console.error('Error decoding token', error)
+      return 'unknown'
     }
   }
 
-  public getUserRoleFromStorage(): 'admin' | 'manager' | 'developer' | 'unknown' {
-    const token = this.getToken();
-    if (!token) return 'unknown';
-    return this.getUserRoleFromToken(token);
+  public getUserRoleFromStorage ():
+    | 'admin'
+    | 'manager'
+    | 'developer'
+    | 'unknown' {
+    const token = this.getToken()
+    if (!token) return 'unknown'
+    return this.getUserRoleFromToken(token)
   }
 
-  public logout(): void {
-    this.clearSession();
-    this.router.navigate(['/']);
+  public logout (): void {
+    this.clearSession()
+    this.router.navigate(['/'])
   }
 
-  private clearSession(): void {
-    localStorage.clear();
-    this.userRoleSubject.next('unknown');
-    this.isLoggedInSubject.next(false);
+  private clearSession (): void {
+    localStorage.clear()
+    this.userRoleSubject.next('unknown')
+    this.isLoggedInSubject.next(false)
     if (this.tokenExpirationTimer) {
-      clearTimeout(this.tokenExpirationTimer);
+      clearTimeout(this.tokenExpirationTimer)
     }
   }
 
-  private updateLoginStatus(): void {
-    this.isLoggedInSubject.next(this.hasToken());
+  private updateLoginStatus (): void {
+    this.isLoggedInSubject.next(this.hasToken())
   }
 
-
-  private setLogoutTimer(token: string): void {
+  private setLogoutTimer (token: string): void {
     try {
-      const decodedToken = jwtDecode<any>(token);
-      const expirationDate = new Date(decodedToken.exp * 1000);
-      const expiresIn = expirationDate.getTime() - Date.now();
+      const decodedToken = jwtDecode<any>(token)
+      const expirationDate = new Date(decodedToken.exp * 1000)
+      const expiresIn = expirationDate.getTime() - Date.now()
 
       if (expiresIn > 0) {
         this.tokenExpirationTimer = setTimeout(() => {
-          this.logout();
-        }, expiresIn);
+          this.logout()
+        }, expiresIn)
       } else {
-        this.logout();
+        this.logout()
       }
     } catch (error) {
-      console.error('Error setting logout timer', error);
-      this.logout();
+      console.error('Error setting logout timer', error)
+      this.logout()
     }
   }
 }

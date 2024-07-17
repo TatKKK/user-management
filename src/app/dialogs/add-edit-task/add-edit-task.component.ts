@@ -5,10 +5,8 @@ import {
   FormBuilder,
   Validators,
   AbstractControl,
-  ValidationErrors,
   ValidatorFn
 } from '@angular/forms'
-import { AbstractControlOptions } from '@angular/forms'
 import { TasksService } from '../../services/tasks.service';
 import { UsersService } from '../../services/users.service';
 import { AuthService } from '../../services/auth.service';
@@ -17,6 +15,7 @@ import { Router } from '@angular/router';
 import { Task, TaskLevel, TaskStatus } from '../../models/task.model';
 import { User } from '../../models/user.model';
 import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/dynamicdialog';
+import { Observable } from 'rxjs';
 
 
 
@@ -26,10 +25,20 @@ import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/dynamicdialog';
   styleUrls: ['./add-edit-task.component.css', './../../pages/add-company/add-company.component.css']
 })
 export class AddEditTaskComponent implements OnInit {
-  isEditMode:Boolean=false;
+  isEditMode: boolean = false;
+  isViewMode: boolean = true;
+  isJandabaMode: boolean = false;
   users:User[]=[];
   tasks:Task[]=[];
   task!:Task;
+
+
+  userRole: 'admin' | 'developer' | 'manager' | 'operator' | 'unknown' =
+    'unknown';
+
+  userRole$: Observable<
+    'admin' | 'developer' | 'manager' | 'operator' | 'unknown'
+  >;
 
   companyId:number | null = null;
   
@@ -43,6 +52,9 @@ export class AddEditTaskComponent implements OnInit {
     this.usersService.assignees$.subscribe(users => {
       this.users = users;
     });
+    this.userRole$.subscribe(role => {
+      this.userRole = role
+    })
     this.usersService.getAssignees();
     this.ownerId = this.parseUserIdFromLocalStorage();
 
@@ -84,6 +96,7 @@ export class AddEditTaskComponent implements OnInit {
   ) {    
     this.task = this.config.data.task;
     this.isEditMode = this.task && this.task.Id !== undefined;
+    this.userRole$ = this.authService.getUserRole();
   
     this.taskForm = this.fb.group({
       Name: ['', [Validators.required, Validators.minLength(4)]],
@@ -198,28 +211,15 @@ export class AddEditTaskComponent implements OnInit {
       this.addTask();
     }
   }
-  // onSubmit() {
-  //   if (this.taskForm.valid) {
-  //     const taskData = { ...this.taskForm.value, OwnerId: this.parseUserIdFromLocalStorage() };
-  //     if (this.isEditMode) {
-  //       this.updateTask(taskData);
-  //     } else {
-  //       this.addTask(taskData);
-  //     }
-  //   } else {
-  //     this.messageService.add({
-  //       severity: 'error',
-  //       summary: 'Info',
-  //       detail: 'Form is not valid'
-  //     });
-  //   }
-  // }
-
- 
-
+  
 
   getTaskLevelKey(level: TaskLevel): string {
     return TaskLevel[level];
   }
 
+
+  toggleJandabaMode(){
+    this.isJandabaMode=true;
+    this.isViewMode=false;
+  }
 }

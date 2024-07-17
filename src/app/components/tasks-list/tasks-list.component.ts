@@ -152,7 +152,7 @@ getTasks(){
   
   onRowSelect(task:Task):void{ 
     // this.startTask(task, $event);
-    const ref=this.dialogService.open(ViewTaskComponent, {
+    const ref=this.dialogService.open(AddEditTaskComponent, {
       header: 'Task Details',
       width:'40%',
       contentStyle:{"nax-height":"100vh", "overflow":"auto"},
